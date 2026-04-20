@@ -12,11 +12,9 @@ import java.nio.file.Path;
 
 public class WellnessConfig {
     public static class Config {
-        public static class Info {
-            public boolean type = true;
-            public boolean age = true;
-            public boolean feed = true;
-            public boolean sickness = true;
+        public static class Affinity {
+            public float affinityRate = 0.1f;
+            public float affinityThreshold = 0.8f;
         }
 
         public static class Age {
@@ -27,6 +25,8 @@ public class WellnessConfig {
 
         public static class Feed {
             public int maxFeed = 6000;
+            public int searchRange = 10;
+            public int eatTime = 100;
         }
 
         public static class Sickness {
@@ -36,10 +36,19 @@ public class WellnessConfig {
             public int hurtTickRate = 100;
         }
 
-        public Info info = new Info();
+        public static class Info {
+            public boolean type = true;
+            public boolean affinity = true;
+            public boolean age = true;
+            public boolean feed = true;
+            public boolean sickness = true;
+        }
+
+        public Affinity affinity = new Affinity();
         public Age age = new Age();
         public Feed feed = new Feed();
         public Sickness sickness = new Sickness();
+        public Info info = new Info();
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

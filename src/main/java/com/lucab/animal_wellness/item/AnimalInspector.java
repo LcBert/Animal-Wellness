@@ -43,6 +43,9 @@ public class AnimalInspector extends Item {
         if (config.info.type)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.type", animal.getType().getDescription().getString())
                     .withStyle(ChatFormatting.YELLOW));
+        if (config.info.affinity)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.affinity", new DecimalFormat("#.##").format(wellness.getAffinity()))
+                    .withStyle(ChatFormatting.YELLOW));
         if (config.info.age)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.age", wellness.getAge())
                     .withStyle(ChatFormatting.YELLOW));

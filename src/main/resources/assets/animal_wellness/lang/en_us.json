@@ -5,6 +5,7 @@
   "block.animal_wellness.spruce_feed_rack": "Spruce Feed Rack",
   "message.animal_wellness.animal_inspector.info": "Animal Inspector",
   "message.animal_wellness.animal_inspector.type": "Type: %s",
+  "message.animal_wellness.animal_inspector.affinity": "Affinity %s",
   "message.animal_wellness.animal_inspector.age": "Age: %d",
   "message.animal_wellness.animal_inspector.feed": "Feed %d",
   "message.animal_wellness.animal_inspector.sickness": "Sickness: %s"

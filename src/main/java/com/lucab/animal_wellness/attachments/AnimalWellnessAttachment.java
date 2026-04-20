@@ -14,18 +14,26 @@ import java.util.List;
 import java.util.UUID;
 
 public class AnimalWellnessAttachment implements INBTSerializable<CompoundTag> {
-    private final List<UUID> affinityPlayers = new ArrayList<>();
+    private float affinity;
     private boolean tracked = false;
     private int feedTick = 0;
     private float sickness = 0.0f;
     private int age = 0;
 
-    public void addAffinityPlayer(UUID playerId) {
-        affinityPlayers.add(playerId);
+    public void setAffinity(float amount) {
+        this.affinity = Math.clamp(amount, 0.0f, 1.0f);
     }
 
-    public List<UUID> getAffinityPlayers() {
-        return affinityPlayers;
+    public void incrementAffinity() {
+        setAffinity(affinity + WellnessConfig.config.affinity.affinityRate);
+    }
+
+    public void decrementAffinity() {
+        setAffinity(affinity - WellnessConfig.config.affinity.affinityRate);
+    }
+
+    public float getAffinity() {
+        return this.affinity;
     }
 
     public void setFeed() {
@@ -38,6 +46,10 @@ public class AnimalWellnessAttachment implements INBTSerializable<CompoundTag> {
 
     public int getFeedTick() {
         return this.feedTick;
+    }
+
+    public boolean isFeeded() {
+        return this.feedTick > 0;
     }
 
     public void setSickness(float amount) {
@@ -76,46 +88,39 @@ public class AnimalWellnessAttachment implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        // Save players UUID List
-        UUIDUtil.CODEC.listOf().encodeStart(NbtOps.INSTANCE, affinityPlayers)
-                .resultOrPartial(LogManager.getLogger()::error)
-                .ifPresent(uuidTag -> tag.put("affinityPlayers", uuidTag));
+        // Save affinity
+        tag.putFloat("affinity", this.affinity);
 
         // Save tracked
-        tag.putBoolean("tracked", tracked);
+        tag.putBoolean("tracked", this.tracked);
 
         // Save feed tick
-        tag.putInt("feedTick", feedTick);
+        tag.putInt("feedTick", this.feedTick);
 
         // Save sickness
-        tag.putFloat("sickness", sickness);
+        tag.putFloat("sickness", this.sickness);
 
         // Save age
-        tag.putInt("age", age);
+        tag.putInt("age", this.age);
 
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
-        // Load players UUID List
-        if (tag.contains("affinityPlayers")) {
-            UUIDUtil.CODEC.listOf().parse(NbtOps.INSTANCE, tag.get("affinityPlayers")).resultOrPartial(LogManager.getLogger()::error).ifPresent(list -> {
-                affinityPlayers.clear();
-                affinityPlayers.addAll(list);
-            });
-        }
+        // Load affinity
+        this.affinity = tag.getFloat("affinity");
 
         // Load tracked
-        tracked = tag.getBoolean("tracked");
+        this.tracked = tag.getBoolean("tracked");
 
         // Load feed tick
-        feedTick = tag.getInt("feedTick");
+        this.feedTick = tag.getInt("feedTick");
 
         // Load sickness
-        sickness = tag.getFloat("sickness");
+        this.sickness = tag.getFloat("sickness");
 
         // Load age
-        age = tag.getInt("age");
+        this.age = tag.getInt("age");
     }
 }
