@@ -13,6 +13,7 @@ public class AddGoals {
     public static void onEntityJoin(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof PathfinderMob mob && event.getEntity() instanceof Animal && !event.getLevel().isClientSide()) {
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
+            mob.goalSelector.addGoal(2, new FeedGoal(mob));
         }
     }
 }

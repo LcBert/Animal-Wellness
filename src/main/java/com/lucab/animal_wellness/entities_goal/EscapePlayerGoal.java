@@ -1,5 +1,6 @@
 package com.lucab.animal_wellness.entities_goal;
 
+import com.lucab.animal_wellness.AnimalWellness;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
@@ -7,6 +8,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
 
 public class EscapePlayerGoal extends Goal {
     private static final double SPEED_MODIFIER = 1.6;
@@ -24,7 +27,9 @@ public class EscapePlayerGoal extends Goal {
     public boolean canUse() {
         Player targetPlayer = this.mob.level().getNearestPlayer(this.mob, DISTANCE_THRESHOLD);
 
-        if (targetPlayer == null || targetPlayer.isCreative()) {
+        List<UUID> wellness = mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get()).getAffinityPlayers();
+
+        if (targetPlayer == null || targetPlayer.isCreative() || wellness.contains(targetPlayer.getUUID())) {
             return false;
         }
 

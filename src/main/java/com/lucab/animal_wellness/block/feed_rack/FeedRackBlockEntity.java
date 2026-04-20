@@ -19,21 +19,21 @@ public class FeedRackBlockEntity extends BlockEntity {
     }
 
     public final int MAX_FEED = 10;
-    private int feedCount = 0;
+    private int feedAmount = 0;
 
     public int getFeed() {
-        return feedCount;
+        return feedAmount;
     }
 
     public boolean setFeed(int amount) {
         if (amount < 0 || amount > MAX_FEED) return false;
-        this.feedCount = amount;
+        this.feedAmount = amount;
         setChanged();
         return true;
     }
 
     public boolean addFeed(int amount) {
-        return setFeed(this.feedCount + amount);
+        return setFeed(this.feedAmount + amount);
     }
 
     public boolean addFeed() {
@@ -41,7 +41,7 @@ public class FeedRackBlockEntity extends BlockEntity {
     }
 
     public boolean removeFeed(int amount) {
-        return setFeed(this.feedCount - amount);
+        return setFeed(this.feedAmount - amount);
     }
 
     public boolean removeFeed() {
@@ -59,13 +59,13 @@ public class FeedRackBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("FeedCount", this.feedCount);
+        tag.putInt("FeedCount", this.feedAmount);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        this.feedCount = tag.getInt("FeedCount");
+        this.feedAmount = tag.getInt("FeedCount");
     }
 
     @Override
