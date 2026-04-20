@@ -4,6 +4,8 @@ import com.lucab.animal_wellness.AnimalWellness;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -109,6 +111,7 @@ public class FeedRackBlock extends BaseEntityBlock {
             if (stack.getItem() == AnimalWellness.ANIMAL_FEED.get()) {
                 if (rack.addFeed()) {
                     stack.shrink(player.isCreative() ? 0 : 1);
+                    level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
             }

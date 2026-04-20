@@ -6,6 +6,8 @@ import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
@@ -19,7 +21,7 @@ public class FeedGoal extends Goal {
     private static final int SEARCH_RANGE = 10;
     private static final int EAT_TIME_SECONDS = 5;
     private static final double SPEED_MODIFIER = 1.2;
-    private static final int EAT_DISTANCE = 1;
+    private static final int EAT_DISTANCE = 2;
 
     private final PathfinderMob mob;
     private BlockPos targetRackPos;
@@ -28,7 +30,7 @@ public class FeedGoal extends Goal {
 
     public FeedGoal(PathfinderMob mob) {
         this.mob = mob;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
@@ -57,12 +59,6 @@ public class FeedGoal extends Goal {
     }
 
     @Override
-    public void start() {
-        this.eatTimer = 0;
-        this.isEating = false;
-    }
-
-    @Override
     public void tick() {
         if (this.targetRackPos == null) return;
 
@@ -70,15 +66,24 @@ public class FeedGoal extends Goal {
         BlockState blockState = level.getBlockState(this.targetRackPos);
         Direction facing = blockState.getValue(FeedRackBlock.FACING);
 
-        // Calculate position in front of the rack (1 block opposite to facing direction)
         BlockPos frontPos = this.targetRackPos.relative(facing.getOpposite());
-        Vec3 targetPos = new Vec3(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
+        Vec3 targetVec = new Vec3(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
 
-        double distance = this.mob.position().distanceTo(targetPos);
+        this.mob.getNavigation().moveTo(
+                targetVec.x,
+                targetVec.y,
+                targetVec.z,
+                SPEED_MODIFIER
+        );
 
+        double distance = this.mob.position().distanceTo(new Vec3(this.targetRackPos.getX(), this.targetRackPos.getY(), this.targetRackPos.getZ()));
         if (distance <= EAT_DISTANCE) {
             this.isEating = true;
             this.eatTimer++;
+
+            if (eatTimer % 20 == 0) {
+                level.playSound(null, targetRackPos, SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
 
             if (this.eatTimer >= EAT_TIME_SECONDS * 20) {
                 AnimalWellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
@@ -89,13 +94,6 @@ public class FeedGoal extends Goal {
                 }
                 this.isEating = false;
             }
-        } else {
-            this.mob.getNavigation().moveTo(
-                    targetPos.x,
-                    targetPos.y,
-                    targetPos.z,
-                    SPEED_MODIFIER
-            );
         }
     }
 
@@ -114,17 +112,13 @@ public class FeedGoal extends Goal {
             return false;
         }
 
-        if (this.isEating && this.eatTimer < EAT_TIME_SECONDS * 20) {
-            return true;
-        }
+        return true;
+    }
 
-        BlockState blockState = level.getBlockState(this.targetRackPos);
-        Direction facing = blockState.getValue(FeedRackBlock.FACING);
-        BlockPos frontPos = this.targetRackPos.relative(facing.getOpposite());
-        Vec3 targetPos = new Vec3(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
-
-        double distance = this.mob.position().distanceTo(targetPos);
-        return distance > EAT_DISTANCE;
+    @Override
+    public void start() {
+        this.eatTimer = 0;
+        this.isEating = true;
     }
 
     @Override

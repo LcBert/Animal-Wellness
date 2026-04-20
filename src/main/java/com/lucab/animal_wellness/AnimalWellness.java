@@ -3,6 +3,8 @@ package com.lucab.animal_wellness;
 import com.lucab.animal_wellness.attachments.AnimalWellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
+import com.lucab.animal_wellness.config.WellnessConfig;
+import com.lucab.animal_wellness.item.AnimalInspector;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -11,9 +13,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.*;
 import org.slf4j.Logger;
 
@@ -33,6 +38,9 @@ public class AnimalWellness {
 
     // Animal Feed
     public static final DeferredItem<Item> ANIMAL_FEED = ITEMS.register("animal_feed", () -> new Item(new Item.Properties()));
+
+    // Animal Inspector
+    public static final DeferredItem<Item> ANIMAL_INSPECTOR = ITEMS.register("animal_inspector", AnimalInspector::new);
 
     // Feed rack
     public static final DeferredBlock<Block> OAK_FEED_RACK = BLOCKS.register("oak_feed_rack", () -> new FeedRackBlock());
@@ -57,15 +65,22 @@ public class AnimalWellness {
                     .icon(Items.WHEAT::getDefaultInstance)
                     .displayItems((parameters, output) -> {
                         output.accept(ANIMAL_FEED);
+                        output.accept(ANIMAL_INSPECTOR);
                         output.accept(OAK_FEED_RACK_ITEM);
                         output.accept(SPRUCE_FEED_RACK_ITEM);
                     }).build());
 
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {
+        NeoForge.EVENT_BUS.register(this);
         BLOCKS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         ATTACHMENT_TYPE.register(modEventBus);
+    }
+
+    @SubscribeEvent
+    public void onServerStarting(ServerStartingEvent event) {
+        WellnessConfig.load();
     }
 }
