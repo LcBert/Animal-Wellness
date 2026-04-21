@@ -25,13 +25,10 @@
     },
     {
       "item": "minecraft:carrot"
-    },
-    {
-      "item": "minecraft:carrot"
     }
   ],
   "result": {
-    "id": "animal_wellness:animal_feed",
-    "count": 1
+    "id": "animal_wellness:animal_food",
+    "count": 2
   }
 }

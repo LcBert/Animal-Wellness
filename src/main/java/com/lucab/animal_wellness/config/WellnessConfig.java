@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WellnessConfig {
     public static class Config {
@@ -70,6 +72,7 @@ public class WellnessConfig {
             public BreedingInfo breedingInfo = new BreedingInfo();
         }
 
+        public List<String> blacklistedEntities = new ArrayList<>();
         public Affinity affinity = new Affinity();
         public Age age = new Age();
         public Feed feed = new Feed();

@@ -5,6 +5,7 @@ import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
@@ -30,6 +31,8 @@ public class WellnessEvent {
     public static void onEntityJoinLeven(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof Animal) {
+            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
+            if (WellnessConfig.config.blacklistedEntities.contains(entityId)) return;
             WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) {
                 wellness.setTracked();
@@ -44,6 +47,8 @@ public class WellnessEvent {
         Level level = entity.level();
         WellnessConfig.Config config = WellnessConfig.config;
         if (entity instanceof Animal animal) {
+            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
+            if (config.blacklistedEntities.contains(entityId)) return;
             WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) wellness.setTracked();
 
@@ -68,7 +73,7 @@ public class WellnessEvent {
             // Sickness
             if (config.sickness.enabled) {
                 if (entity.tickCount % 20 == 0) {
-                    if(wellness.isFed() && wellness.isHydrated()){
+                    if (wellness.isFed() && wellness.isHydrated()) {
                         wellness.removeSickness();
                     } else {
                         wellness.addSickness();
