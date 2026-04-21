@@ -5,6 +5,7 @@ import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +29,7 @@ public class FeedGoal extends Goal {
 
     public FeedGoal(PathfinderMob mob) {
         this.mob = mob;
-        this.setFlags(EnumSet.of(Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
@@ -70,11 +71,11 @@ public class FeedGoal extends Goal {
         Vec3 targetVec = new Vec3(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
 
         this.mob.getNavigation().moveTo(targetVec.x, targetVec.y, targetVec.z, 0, SPEED_MODIFIER);
+        this.mob.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(this.targetRackPos.getX() + 0.5, this.targetRackPos.getY(), this.targetRackPos.getZ() + 0.5));
 
         double distance = this.mob.position().distanceTo(new Vec3(this.targetRackPos.getX(), this.targetRackPos.getY(), this.targetRackPos.getZ()));
         if (distance <= EAT_DISTANCE) {
             this.eatTimer++;
-
 
             WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isFed()) {
@@ -105,6 +106,10 @@ public class FeedGoal extends Goal {
 
         BlockEntity be = level.getBlockEntity(this.targetRackPos);
         if (!(be instanceof FeedRackBlockEntity rack) || rack.getFeed() <= 0) {
+            return false;
+        }
+
+        if (eatTimer >= WellnessConfig.config.feed.eatTime) {
             return false;
         }
 
