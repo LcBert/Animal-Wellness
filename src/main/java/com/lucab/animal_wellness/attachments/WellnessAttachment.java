@@ -7,11 +7,19 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
 public class WellnessAttachment implements INBTSerializable<CompoundTag> {
-    private float affinity;
+    // Tracked
     private boolean tracked = false;
-    private int feedTick = 0;
-    private float sickness = 0.0f;
-    private int age = 0;
+
+    public void setTracked() {
+        this.tracked = true;
+    }
+
+    public boolean isTracked() {
+        return this.tracked;
+    }
+
+    // Affinity
+    private float affinity;
 
     public void setAffinity(float amount) {
         this.affinity = Math.clamp(amount, 0.0f, 1.0f);
@@ -29,6 +37,20 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         return this.affinity;
     }
 
+    // Age
+    private int age = 0;
+
+    public int getAge() {
+        return this.age;
+    }
+
+    public void incrementAge() {
+        this.age++;
+    }
+
+    // Feed
+    private int feedTick = 0;
+
     public void setFeed() {
         this.feedTick = WellnessConfig.config.feed.maxFeed;
     }
@@ -41,9 +63,12 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         return this.feedTick;
     }
 
-    public boolean isFeeded() {
+    public boolean isFed() {
         return this.feedTick > 0;
     }
+
+    // Sickness
+    private float sickness = 0.0f;
 
     public void setSickness(float amount) {
         this.sickness = Math.clamp(amount, 0.0f, 1.0f);
@@ -61,31 +86,18 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         return this.sickness;
     }
 
-    public void setTracked() {
-        this.tracked = true;
-    }
-
-    public boolean isTracked() {
-        return this.tracked;
-    }
-
-    public int getAge() {
-        return this.age;
-    }
-
-    public void incrementAge() {
-        this.age++;
-    }
-
     @Override
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
 
+        // Save tracked
+        tag.putBoolean("tracked", this.tracked);
+
         // Save affinity
         tag.putFloat("affinity", this.affinity);
 
-        // Save tracked
-        tag.putBoolean("tracked", this.tracked);
+        // Save age
+        tag.putInt("age", this.age);
 
         // Save feed tick
         tag.putInt("feedTick", this.feedTick);
@@ -93,19 +105,19 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         // Save sickness
         tag.putFloat("sickness", this.sickness);
 
-        // Save age
-        tag.putInt("age", this.age);
-
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
+        // Load tracked
+        this.tracked = tag.getBoolean("tracked");
+
         // Load affinity
         this.affinity = tag.getFloat("affinity");
 
-        // Load tracked
-        this.tracked = tag.getBoolean("tracked");
+        // Load age
+        this.age = tag.getInt("age");
 
         // Load feed tick
         this.feedTick = tag.getInt("feedTick");
@@ -113,7 +125,5 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         // Load sickness
         this.sickness = tag.getFloat("sickness");
 
-        // Load age
-        this.age = tag.getInt("age");
     }
 }

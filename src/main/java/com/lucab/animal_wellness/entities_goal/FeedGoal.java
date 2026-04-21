@@ -79,7 +79,7 @@ public class FeedGoal extends Goal {
 
 
             WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-            if (!wellness.isFeeded()) {
+            if (!wellness.isFed()) {
                 if (eatTimer % 20 == 0)
                     level.playSound(null, targetRackPos, SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
 
