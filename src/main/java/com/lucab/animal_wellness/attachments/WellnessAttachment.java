@@ -67,23 +67,23 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     }
 
 
-    // Feed
-    private int feedTick = 0;
+    // Food
+    private int foodTick = 0;
 
-    public void setFeed() {
-        this.feedTick = WellnessConfig.config.feed.maxFeed;
+    public void setFood() {
+        this.foodTick = WellnessConfig.config.feed.maxFeed;
     }
 
-    public void decreaseFeedTick() {
-        this.feedTick = Math.max(this.feedTick - 1, 0);
+    public void decreaseFoodTick() {
+        this.foodTick = Math.max(this.foodTick - 1, 0);
     }
 
-    public int getFeedTick() {
-        return this.feedTick;
+    public int getFoodTick() {
+        return this.foodTick;
     }
 
     public boolean isFed() {
-        return this.feedTick > 0;
+        return this.foodTick > 0;
     }
 
     // Sickness
@@ -202,7 +202,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         tag.putInt("age", this.age);
 
         // Save feed tick
-        tag.putInt("feedTick", this.feedTick);
+        tag.putInt("feedTick", this.foodTick);
 
         // Save sickness
         tag.putFloat("sickness", this.sickness);
@@ -222,7 +222,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         this.age = tag.getInt("age");
 
         // Load feed tick
-        this.feedTick = tag.getInt("feedTick");
+        this.foodTick = tag.getInt("feedTick");
 
         // Load sickness
         this.sickness = tag.getFloat("sickness");

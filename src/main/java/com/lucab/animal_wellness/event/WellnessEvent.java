@@ -47,8 +47,8 @@ public class WellnessEvent {
             WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) wellness.setTracked();
 
-            // Feed
-            if (wellness.getFeedTick() > 0) wellness.decreaseFeedTick();
+            // Food
+            if (wellness.getFoodTick() > 0) wellness.decreaseFoodTick();
 
             // Age
             wellness.incrementAge();
@@ -67,7 +67,7 @@ public class WellnessEvent {
             // Sickness
             if (config.sickness.enabled) {
                 if (entity.tickCount % 20 == 0) {
-                    if (wellness.getFeedTick() > 0) {
+                    if (wellness.getFoodTick() > 0) {
                         wellness.removeSickness();
                     } else {
                         wellness.addSickness();
