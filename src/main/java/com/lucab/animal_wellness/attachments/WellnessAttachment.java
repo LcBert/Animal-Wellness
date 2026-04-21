@@ -220,6 +220,9 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         // Save age
         tag.putInt("age", this.age);
 
+        // Save sex
+        tag.putString("male", this.sex.toString());
+
         // Save food tick
         tag.putInt("feedTick", this.foodTick);
 
@@ -242,6 +245,9 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
 
         // Load age
         this.age = tag.getInt("age");
+
+        // Load sex
+        this.sex = AnimalSex.valueOf(tag.getString("male"));
 
         // Load food tick
         this.foodTick = tag.getInt("feedTick");
