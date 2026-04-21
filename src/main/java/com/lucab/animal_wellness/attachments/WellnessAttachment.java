@@ -86,6 +86,25 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         return this.foodTick > 0;
     }
 
+    // Water
+    private int waterTick = 0;
+
+    public void setWater() {
+        this.waterTick = WellnessConfig.config.feed.maxWater;
+    }
+
+    public void decreaseWaterTick() {
+        this.waterTick = Math.max(this.waterTick - 1, 0);
+    }
+
+    public int getWaterTick() {
+        return this.waterTick;
+    }
+
+    public boolean isHydrated() {
+        return this.waterTick > 0;
+    }
+
     // Sickness
     private float sickness = 0.0f;
 
@@ -201,8 +220,11 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         // Save age
         tag.putInt("age", this.age);
 
-        // Save feed tick
+        // Save food tick
         tag.putInt("feedTick", this.foodTick);
+
+        // Save water tick
+        tag.putInt("waterTick", this.waterTick);
 
         // Save sickness
         tag.putFloat("sickness", this.sickness);
@@ -221,11 +243,13 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         // Load age
         this.age = tag.getInt("age");
 
-        // Load feed tick
+        // Load food tick
         this.foodTick = tag.getInt("feedTick");
+
+        // Load water tick
+        this.waterTick = tag.getInt("waterTick");
 
         // Load sickness
         this.sickness = tag.getFloat("sickness");
-
     }
 }

@@ -3,6 +3,8 @@ package com.lucab.animal_wellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
+import com.lucab.animal_wellness.block.water_rack.WaterRackBlock;
+import com.lucab.animal_wellness.block.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.mojang.logging.LogUtils;
@@ -36,7 +38,11 @@ public class AnimalWellness {
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPE = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
 
-    // Animal Feed
+    // Animal Attachment
+    public static final Supplier<AttachmentType<WellnessAttachment>> ANIMAL_WELLNESS_ATTACHMENT = ATTACHMENT_TYPE.register(
+            "animal_wellness", () -> AttachmentType.serializable(WellnessAttachment::new).build());
+
+    // Animal Food
     public static final DeferredItem<Item> ANIMAL_FOOD = ITEMS.register("animal_food", () -> new Item(new Item.Properties()));
 
     // Animal Inspector
@@ -48,16 +54,22 @@ public class AnimalWellness {
     public static final DeferredBlock<Block> SPRUCE_FEED_RACK = BLOCKS.register("spruce_feed_rack", () -> new FeedRackBlock());
     public static final DeferredItem<BlockItem> SPRUCE_FEED_RACK_ITEM = ITEMS.register("spruce_feed_rack", () -> new BlockItem(SPRUCE_FEED_RACK.get(), new Item.Properties()));
 
-    // Animal Attachment
-    public static final Supplier<AttachmentType<WellnessAttachment>> ANIMAL_WELLNESS_ATTACHMENT = ATTACHMENT_TYPE.register(
-            "animal_wellness", () -> AttachmentType.serializable(WellnessAttachment::new).build());
-
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedRackBlockEntity>> FEED_RACK_BLOCK_ENTITY = BLOCK_ENTITIES
             .register("oak_feed_rack", () -> BlockEntityType.Builder.of(FeedRackBlockEntity::new,
                     OAK_FEED_RACK.get(),
                     SPRUCE_FEED_RACK.get()
             ).build(null));
 
+    // Water rack
+    public static final DeferredBlock<Block> STONE_WATER_RACK = BLOCKS.register("stone_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> STONE_WATER_RACK_ITEM = ITEMS.register("stone_water_rack", () -> new BlockItem(STONE_WATER_RACK.get(), new Item.Properties()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterRackBlockEntity>> WATER_RACK_BLOCK_ENTITY = BLOCK_ENTITIES
+            .register("water_rack", () -> BlockEntityType.Builder.of(WaterRackBlockEntity::new,
+                    STONE_WATER_RACK.get()
+            ).build(null));
+
+    // Creative Tab
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ANIMAL_WELLNESS_TAB = CREATIVE_MODE_TABS
             .register("animal_wellness_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.animal_wellness"))
@@ -68,6 +80,7 @@ public class AnimalWellness {
                         output.accept(ANIMAL_INSPECTOR);
                         output.accept(OAK_FEED_RACK_ITEM);
                         output.accept(SPRUCE_FEED_RACK_ITEM);
+                        output.accept(STONE_WATER_RACK_ITEM);
                     }).build());
 
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {

@@ -4,9 +4,12 @@ import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
+import com.lucab.animal_wellness.block.water_rack.WaterRackBlock;
+import com.lucab.animal_wellness.block.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.PathfinderMob;
@@ -18,12 +21,15 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class FeedGoal extends Goal {
+    private enum RackType {FEED, WATER}
+
     private static final double SPEED_MODIFIER = 1.2;
     // Using squared distance to avoid expensive Math.sqrt() calls during tick
     private static final double EAT_DISTANCE_SQR = 4.0;
 
     private final PathfinderMob mob;
     private BlockPos targetRackPos;
+    private RackType rackType;
     private int eatTimer;
     private int navigationDelay;
 
@@ -40,11 +46,20 @@ public class FeedGoal extends Goal {
 
         WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
 
-        // Don't search if the animal is already full or on cooldown
-        if (wellness.getFoodTick() > 0) return false;
+        // Don't search if the animal is already full
+        if (wellness.isFed() && wellness.isHydrated()) return false;
 
-        this.targetRackPos = findNearestFeedRack();
-        return this.targetRackPos != null;
+        if (!wellness.isFed()) {
+            this.targetRackPos = findNearestFeedRack();
+            this.rackType = RackType.FEED;
+            if (this.targetRackPos != null) return true;
+        }
+        if (!wellness.isHydrated()) {
+            this.targetRackPos = findNearestWaterRack();
+            this.rackType = RackType.WATER;
+            if (this.targetRackPos != null) return true;
+        }
+        return false;
     }
 
     private BlockPos findNearestFeedRack() {
@@ -67,6 +82,26 @@ public class FeedGoal extends Goal {
         return null;
     }
 
+    private BlockPos findNearestWaterRack() {
+        Level level = this.mob.level();
+        BlockPos mobPos = this.mob.blockPosition();
+        int range = WellnessConfig.config.feed.searchRange;
+
+        // Efficiently iterate through blocks within the search volume
+        for (BlockPos checkPos : BlockPos.betweenClosed(
+                mobPos.offset(-range, -2, -range),
+                mobPos.offset(range, 2, range))) {
+
+            if (level.getBlockState(checkPos).getBlock() instanceof WaterRackBlock) {
+                if (level.getBlockEntity(checkPos) instanceof WaterRackBlockEntity rack && rack.getWater() > 0) {
+                    // Return an immutable copy to prevent position shifting during iteration
+                    return checkPos.immutable();
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void tick() {
         if (this.targetRackPos == null) return;
@@ -79,7 +114,7 @@ public class FeedGoal extends Goal {
             Direction facing = level.getBlockState(this.targetRackPos).getValue(FeedRackBlock.FACING);
             // Target the block in front of the rack based on its facing direction
             BlockPos frontPos = this.targetRackPos.relative(facing.getOpposite());
-            this.mob.getNavigation().moveTo(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5, SPEED_MODIFIER);
+            this.mob.getNavigation().moveTo(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5, 0, SPEED_MODIFIER);
         }
 
         // Keep the animal looking at the center of the rack
@@ -94,16 +129,20 @@ public class FeedGoal extends Goal {
 
             // Play eating sound once per second (20 ticks)
             if (eatTimer % 20 == 0) {
-                level.playSound(null, targetRackPos, SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+                SoundEvent sound = this.rackType == RackType.FEED ? SoundEvents.GRASS_BREAK : SoundEvents.GENERIC_DRINK;
+                level.playSound(null, targetRackPos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
 
             // Finish eating process
             if (this.eatTimer >= WellnessConfig.config.feed.eatTime) {
-                if (level.getBlockEntity(this.targetRackPos) instanceof FeedRackBlockEntity rack) {
-                    rack.removeFood();
+                if (level.getBlockEntity(this.targetRackPos) instanceof FeedRackBlockEntity feedRack) {
+                    feedRack.removeFood();
                     wellness.setFood();
                     wellness.incrementAffinity();
                     this.stop(); // Task complete
+                } else if (level.getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {
+                    waterRack.removeWater();
+                    wellness.setWater();
                 }
             }
         }
@@ -117,6 +156,10 @@ public class FeedGoal extends Goal {
         if (this.mob.level().getBlockEntity(this.targetRackPos) instanceof FeedRackBlockEntity rack) {
             return rack.getFood() > 0;
         }
+
+        if (this.mob.level().getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {
+            return waterRack.getWater() > 0;
+        }
         return false;
     }
 
@@ -129,6 +172,7 @@ public class FeedGoal extends Goal {
     @Override
     public void stop() {
         this.targetRackPos = null;
+        this.rackType = null;
         this.eatTimer = 0;
         this.mob.getNavigation().stop();
     }

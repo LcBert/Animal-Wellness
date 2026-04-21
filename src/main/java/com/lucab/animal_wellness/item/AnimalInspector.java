@@ -54,8 +54,10 @@ public class AnimalInspector extends Item {
         }
         if (config.info.sex)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sex", wellness.getSex().toString()).withStyle(ChatFormatting.YELLOW));
-        if (config.info.feed)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.feed", wellness.getFoodTick()).withStyle(ChatFormatting.YELLOW));
+        if (config.info.food)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.food", wellness.getFoodTick()).withStyle(ChatFormatting.YELLOW));
+        if (config.info.hydration)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.hydration", wellness.getWaterTick()).withStyle(ChatFormatting.YELLOW));
         if (config.info.sickness)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sickness", new DecimalFormat("#.##").format(wellness.getSickness())).withStyle(ChatFormatting.YELLOW));
 

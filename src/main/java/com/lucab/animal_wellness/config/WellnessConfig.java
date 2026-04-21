@@ -25,6 +25,7 @@ public class WellnessConfig {
 
         public static class Feed {
             public int maxFeed = 6000;
+            public int maxWater = 6000;
             public int searchRange = 10;
             public int eatTime = 100;
         }
@@ -63,7 +64,8 @@ public class WellnessConfig {
             public boolean affinity = true;
             public boolean age = true;
             public boolean sex = true;
-            public boolean feed = true;
+            public boolean food = true;
+            public boolean hydration = true;
             public boolean sickness = true;
             public BreedingInfo breedingInfo = new BreedingInfo();
         }

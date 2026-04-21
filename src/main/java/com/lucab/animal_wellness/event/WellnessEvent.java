@@ -48,7 +48,8 @@ public class WellnessEvent {
             if (!wellness.isTracked()) wellness.setTracked();
 
             // Food
-            if (wellness.getFoodTick() > 0) wellness.decreaseFoodTick();
+            if (wellness.isFed()) wellness.decreaseFoodTick();
+            if (wellness.isHydrated()) wellness.decreaseWaterTick();
 
             // Age
             wellness.incrementAge();
@@ -67,7 +68,7 @@ public class WellnessEvent {
             // Sickness
             if (config.sickness.enabled) {
                 if (entity.tickCount % 20 == 0) {
-                    if (wellness.getFoodTick() > 0) {
+                    if(wellness.isFed() && wellness.isHydrated()){
                         wellness.removeSickness();
                     } else {
                         wellness.addSickness();
