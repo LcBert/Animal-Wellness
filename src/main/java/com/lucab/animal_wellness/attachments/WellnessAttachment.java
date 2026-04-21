@@ -2,18 +2,11 @@ package com.lucab.animal_wellness.attachments;
 
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-public class AnimalWellnessAttachment implements INBTSerializable<CompoundTag> {
+public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     private float affinity;
     private boolean tracked = false;
     private int feedTick = 0;

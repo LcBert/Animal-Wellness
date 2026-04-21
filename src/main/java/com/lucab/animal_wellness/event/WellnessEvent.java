@@ -1,20 +1,17 @@
 package com.lucab.animal_wellness.event;
 
 import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.AnimalWellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -28,7 +25,7 @@ public class WellnessEvent {
         Level level = entity.level();
         WellnessConfig.Config config = WellnessConfig.config;
         if (entity instanceof Animal animal) {
-            AnimalWellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) wellness.setTracked();
 
             // Feed
@@ -81,7 +78,7 @@ public class WellnessEvent {
     public static void onLivingDrops(LivingDropsEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof Animal) {
-            AnimalWellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (wellness.getAge() >= WellnessConfig.config.age.maxAge) {
                 event.setCanceled(true);
             }

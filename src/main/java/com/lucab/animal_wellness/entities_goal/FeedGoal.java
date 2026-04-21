@@ -1,7 +1,7 @@
 package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.AnimalWellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
@@ -37,7 +37,7 @@ public class FeedGoal extends Goal {
         Level level = this.mob.level();
         BlockPos mobPos = this.mob.blockPosition();
         WellnessConfig.Config config = WellnessConfig.config;
-        AnimalWellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+        WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
         if (wellness.getFeedTick() > 0) return false;
 
         for (int x = -config.feed.searchRange; x <= config.feed.searchRange; x++) {
@@ -78,7 +78,7 @@ public class FeedGoal extends Goal {
             this.eatTimer++;
 
 
-            AnimalWellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+            WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isFeeded()) {
                 if (eatTimer % 20 == 0)
                     level.playSound(null, targetRackPos, SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);

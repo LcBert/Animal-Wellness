@@ -1,6 +1,6 @@
 package com.lucab.animal_wellness;
 
-import com.lucab.animal_wellness.attachments.AnimalWellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
@@ -49,8 +49,8 @@ public class AnimalWellness {
     public static final DeferredItem<BlockItem> SPRUCE_FEED_RACK_ITEM = ITEMS.register("spruce_feed_rack", () -> new BlockItem(SPRUCE_FEED_RACK.get(), new Item.Properties()));
 
     // Animal Attachment
-    public static final Supplier<AttachmentType<AnimalWellnessAttachment>> ANIMAL_WELLNESS_ATTACHMENT = ATTACHMENT_TYPE.register(
-            "animal_wellness", () -> AttachmentType.serializable(AnimalWellnessAttachment::new).build());
+    public static final Supplier<AttachmentType<WellnessAttachment>> ANIMAL_WELLNESS_ATTACHMENT = ATTACHMENT_TYPE.register(
+            "animal_wellness", () -> AttachmentType.serializable(WellnessAttachment::new).build());
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedRackBlockEntity>> FEED_RACK_BLOCK_ENTITY = BLOCK_ENTITIES
             .register("oak_feed_rack", () -> BlockEntityType.Builder.of(FeedRackBlockEntity::new,
