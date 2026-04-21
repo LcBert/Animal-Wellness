@@ -19,6 +19,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.joml.Vector3f;
@@ -143,7 +144,21 @@ public class WellnessEvent {
     }
 
     @SubscribeEvent
-    public static void onLivingDrops(LivingDropsEvent event) {
+    public static void onLivingDropsItems(LivingDropsEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Animal) {
+            WellnessConfig.Config config = WellnessConfig.config;
+            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+            if (wellness.isOld()
+                    || wellness.getAffinity() < config.drop.affinityThreshold
+                    || wellness.getSickness() > config.drop.sicknessThreshold) {
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDropsXp(LivingExperienceDropEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof Animal) {
             WellnessConfig.Config config = WellnessConfig.config;
