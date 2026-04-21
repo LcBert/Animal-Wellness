@@ -47,7 +47,7 @@ public class FeedGoal extends Goal {
 
                     if (level.getBlockState(checkPos).getBlock() instanceof FeedRackBlock) {
                         BlockEntity be = level.getBlockEntity(checkPos);
-                        if (be instanceof FeedRackBlockEntity rack && rack.getFeed() > 0) {
+                        if (be instanceof FeedRackBlockEntity rack && rack.getFood() > 0) {
                             this.targetRackPos = checkPos;
                             return true;
                         }
@@ -85,7 +85,7 @@ public class FeedGoal extends Goal {
                 if (this.eatTimer >= config.feed.eatTime) {
                     BlockEntity be = level.getBlockEntity(this.targetRackPos);
                     if (be instanceof FeedRackBlockEntity rack) {
-                        rack.removeFeed();
+                        rack.removeFood();
                         wellness.setFeed();
                         wellness.incrementAffinity();
                     }
@@ -105,7 +105,7 @@ public class FeedGoal extends Goal {
         }
 
         BlockEntity be = level.getBlockEntity(this.targetRackPos);
-        if (!(be instanceof FeedRackBlockEntity rack) || rack.getFeed() <= 0) {
+        if (!(be instanceof FeedRackBlockEntity rack) || rack.getFood() <= 0) {
             return false;
         }
 

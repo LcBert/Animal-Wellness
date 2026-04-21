@@ -18,34 +18,38 @@ public class FeedRackBlockEntity extends BlockEntity {
         super(AnimalWellness.FEED_RACK_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public final int MAX_FEED = 10;
-    private int feedAmount = 0;
+    public final int MAX_FOOD = 10;
+    private int foodAmount = 0;
 
-    public int getFeed() {
-        return feedAmount;
+    public int getFood() {
+        return foodAmount;
     }
 
-    public boolean setFeed(int amount) {
-        if (amount < 0 || amount > MAX_FEED) return false;
-        this.feedAmount = amount;
+    public boolean setFood(int amount) {
+        if (amount < 0 || amount > MAX_FOOD) return false;
+        this.foodAmount = amount;
         setChanged();
         return true;
     }
 
-    public boolean addFeed(int amount) {
-        return setFeed(this.feedAmount + amount);
+    public boolean addFood(int amount) {
+        return setFood(this.foodAmount + amount);
     }
 
-    public boolean addFeed() {
-        return addFeed(1);
+    public boolean addFood() {
+        return addFood(1);
     }
 
-    public boolean removeFeed(int amount) {
-        return setFeed(this.feedAmount - amount);
+    public boolean removeFood(int amount) {
+        return setFood(this.foodAmount - amount);
     }
 
-    public boolean removeFeed() {
-        return removeFeed(1);
+    public boolean removeFood() {
+        return removeFood(1);
+    }
+
+    public boolean hasFood() {
+        return getFood() > 0;
     }
 
     @Override
@@ -53,19 +57,20 @@ public class FeedRackBlockEntity extends BlockEntity {
         super.setChanged();
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+            level.setBlock(worldPosition, getBlockState().setValue(FeedRackBlock.FOOD, hasFood()), Block.UPDATE_ALL);
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("FeedCount", this.feedAmount);
+        tag.putInt("FoodCount", this.foodAmount);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        this.feedAmount = tag.getInt("FeedCount");
+        this.foodAmount = tag.getInt("FoodCount");
     }
 
     @Override

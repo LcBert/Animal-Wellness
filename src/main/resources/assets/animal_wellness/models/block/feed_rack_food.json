@@ -1,0 +1,40 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"hay": "minecraft:block/hay_block_top"
+	},
+	"elements": [
+		{
+			"from": [2, 3, 2],
+			"to": [16, 3, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [2, 1, 2]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 12], "texture": "#hay"}
+			}
+		},
+		{
+			"from": [16, 3, 2],
+			"to": [30, 3, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [16, 1, 2]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 12], "texture": "#hay"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "left",
+			"origin": [8, 8, 8],
+			"scope": 0,
+			"color": 0,
+			"children": [0]
+		},
+		{
+			"name": "right",
+			"origin": [8, 8, 8],
+			"scope": 0,
+			"color": 0,
+			"children": [1]
+		}
+	]
+}

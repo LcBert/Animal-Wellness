@@ -1,34 +1,78 @@
 {
-  "variants": {
-    "facing=east,part=left": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 90
+  "multipart": [
+    {
+      "apply": {
+        "model": "animal_wellness:block/spruce_feed_rack"
+      },
+      "when": {
+        "facing": "north"
+      }
     },
-    "facing=east,part=right": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 90
+    {
+      "apply": {
+        "model": "animal_wellness:block/spruce_feed_rack",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
     },
-    "facing=north,part=left": {
-      "model": "animal_wellness:block/spruce_feed_rack"
+    {
+      "apply": {
+        "model": "animal_wellness:block/spruce_feed_rack",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
     },
-    "facing=north,part=right": {
-      "model": "animal_wellness:block/spruce_feed_rack"
+    {
+      "apply": {
+        "model": "animal_wellness:block/spruce_feed_rack",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
     },
-    "facing=south,part=left": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 180
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food"
+      },
+      "when": {
+        "facing": "north",
+        "food": "true"
+      }
     },
-    "facing=south,part=right": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 180
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "food": "true"
+      }
     },
-    "facing=west,part=left": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 270
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "food": "true"
+      }
     },
-    "facing=west,part=right": {
-      "model": "animal_wellness:block/spruce_feed_rack",
-      "y": 270
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "food": "true"
+      }
     }
-  }
+  ]
 }

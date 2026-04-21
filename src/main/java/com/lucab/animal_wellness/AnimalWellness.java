@@ -37,7 +37,7 @@ public class AnimalWellness {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPE = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
 
     // Animal Feed
-    public static final DeferredItem<Item> ANIMAL_FEED = ITEMS.register("animal_feed", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ANIMAL_FOOD = ITEMS.register("animal_food", () -> new Item(new Item.Properties()));
 
     // Animal Inspector
     public static final DeferredItem<Item> ANIMAL_INSPECTOR = ITEMS.register("animal_inspector", AnimalInspector::new);
@@ -64,7 +64,7 @@ public class AnimalWellness {
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(Items.WHEAT::getDefaultInstance)
                     .displayItems((parameters, output) -> {
-                        output.accept(ANIMAL_FEED);
+                        output.accept(ANIMAL_FOOD);
                         output.accept(ANIMAL_INSPECTOR);
                         output.accept(OAK_FEED_RACK_ITEM);
                         output.accept(SPRUCE_FEED_RACK_ITEM);

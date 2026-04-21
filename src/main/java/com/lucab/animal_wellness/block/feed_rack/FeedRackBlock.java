@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
@@ -30,14 +31,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class FeedRackBlock extends BaseEntityBlock {
     public static final MapCodec<FeedRackBlock> CODEC = simpleCodec(FeedRackBlock::new);
-    public static final EnumProperty<RackPart> PART = EnumProperty.create("part", RackPart.class);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<RackPart> PART = EnumProperty.create("part", RackPart.class);
+    public static final BooleanProperty FOOD = BooleanProperty.create("food");
 
     public FeedRackBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(PART, RackPart.LEFT));
+                .setValue(PART, RackPart.LEFT)
+                .setValue(FOOD, false));
     }
 
     public FeedRackBlock() {
@@ -50,12 +53,13 @@ public class FeedRackBlock extends BaseEntityBlock {
 
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(PART, RackPart.LEFT));
+                .setValue(PART, RackPart.LEFT)
+                .setValue(FOOD, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART);
+        builder.add(FACING, PART, FOOD);
     }
 
     @Override
@@ -109,8 +113,8 @@ public class FeedRackBlock extends BaseEntityBlock {
             }
         }
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof FeedRackBlockEntity rack) {
-            if (stack.getItem() == AnimalWellness.ANIMAL_FEED.get()) {
-                if (rack.addFeed()) {
+            if (stack.getItem() == AnimalWellness.ANIMAL_FOOD.get()) {
+                if (rack.addFood()) {
                     stack.shrink(player.isCreative() ? 0 : 1);
                     level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
