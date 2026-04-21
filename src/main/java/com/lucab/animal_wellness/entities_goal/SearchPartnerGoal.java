@@ -28,7 +28,6 @@ public class SearchPartnerGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        WellnessConfig.Config config = WellnessConfig.config;
         WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
         UUID targetUUID = wellness.getPartner();
         if (targetUUID == null) return false;
