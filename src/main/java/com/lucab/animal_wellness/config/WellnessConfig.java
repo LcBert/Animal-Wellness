@@ -47,11 +47,20 @@ public class WellnessConfig {
         }
 
         public static class Info {
+            public static class BreedingInfo {
+                public boolean pregnancy = true;
+                public boolean gestationCooldown = true;
+                public boolean breedingCooldown = true;
+            }
+
+            public boolean enabled = true;
             public boolean type = true;
             public boolean affinity = true;
             public boolean age = true;
+            public boolean sex = true;
             public boolean feed = true;
             public boolean sickness = true;
+            public BreedingInfo breedingInfo = new BreedingInfo();
         }
 
         public Affinity affinity = new Affinity();

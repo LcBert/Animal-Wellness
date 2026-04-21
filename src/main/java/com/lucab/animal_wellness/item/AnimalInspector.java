@@ -38,29 +38,34 @@ public class AnimalInspector extends Item {
 
     private void showAnimalInfo(Player player, Animal animal) {
         WellnessConfig.Config config = WellnessConfig.config;
+        if (!config.info.enabled) return;
         WellnessAttachment wellness = animal.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
         MutableComponent newLine = Component.literal("\n - ").withStyle(ChatFormatting.YELLOW);
         MutableComponent component = Component.translatable("message.animal_wellness.animal_inspector.info");
         if (config.info.type)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.type", animal.getType().getDescription().getString())
-                    .withStyle(ChatFormatting.YELLOW));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.type", animal.getType().getDescription().getString()).withStyle(ChatFormatting.YELLOW));
         if (config.info.affinity)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.affinity", new DecimalFormat("#.##").format(wellness.getAffinity()))
-                    .withStyle(ChatFormatting.YELLOW));
-        if (config.info.age)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.age", wellness.getAge())
-                    .withStyle(ChatFormatting.YELLOW));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.affinity", new DecimalFormat("#.##").format(wellness.getAffinity())).withStyle(ChatFormatting.YELLOW));
+        if (config.info.age) {
+            String translatableAge = "message.animal_wellness.animal_inspector.age_";
+            if (wellness.isBaby()) translatableAge += "baby";
+            if (wellness.isAdult()) translatableAge += "adult";
+            if (wellness.isOld()) translatableAge += "old";
+            component.append(newLine).append(Component.translatable(translatableAge).withStyle(ChatFormatting.YELLOW));
+        }
+        if (config.info.sex)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sex", wellness.getSex().toString()).withStyle(ChatFormatting.YELLOW));
         if (config.info.feed)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.feed", wellness.getFeedTick())
-                    .withStyle(ChatFormatting.YELLOW));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.feed", wellness.getFeedTick()).withStyle(ChatFormatting.YELLOW));
         if (config.info.sickness)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sickness", new DecimalFormat("#.##").format(wellness.getSickness()))
-                    .withStyle(ChatFormatting.YELLOW));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sickness", new DecimalFormat("#.##").format(wellness.getSickness())).withStyle(ChatFormatting.YELLOW));
 
-        component.append(newLine).append(wellness.getSex().toString());
-        component.append(newLine).append(animal.getUUID().toString());
-        UUID partner = wellness.getPartner();
-        component.append(newLine).append(partner == null ? "null" : partner.toString());
+        if (config.info.breedingInfo.pregnancy)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.pregnant", String.valueOf(wellness.isPregnant())).withStyle(ChatFormatting.YELLOW));
+        if (config.info.breedingInfo.gestationCooldown)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.gestation_cooldown", wellness.getGestation()).withStyle(ChatFormatting.YELLOW));
+        if (config.info.breedingInfo.breedingCooldown)
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.breeding_cooldown", wellness.getBreedingCooldown()).withStyle(ChatFormatting.YELLOW));
 
         player.displayClientMessage(component, false);
     }

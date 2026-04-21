@@ -1,12 +1,19 @@
 {
   "itemGroup.animal_wellness": "Animal Wellness",
   "item.animal_wellness.animal_feed": "Animal Feed",
+  "item.animal_wellness.animal_inspector": "Animal Inspector",
   "block.animal_wellness.oak_feed_rack": "Oak Feed Rack",
   "block.animal_wellness.spruce_feed_rack": "Spruce Feed Rack",
   "message.animal_wellness.animal_inspector.info": "Animal Inspector",
   "message.animal_wellness.animal_inspector.type": "Type: %s",
   "message.animal_wellness.animal_inspector.affinity": "Affinity %s",
-  "message.animal_wellness.animal_inspector.age": "Age: %d",
+  "message.animal_wellness.animal_inspector.age_baby": "Age: Baby",
+  "message.animal_wellness.animal_inspector.age_adult": "Age: Adult",
+  "message.animal_wellness.animal_inspector.age_old": "Age: Old",
+  "message.animal_wellness.animal_inspector.sex": "Sex: %s",
   "message.animal_wellness.animal_inspector.feed": "Feed %d",
-  "message.animal_wellness.animal_inspector.sickness": "Sickness: %s"
+  "message.animal_wellness.animal_inspector.sickness": "Sickness: %s",
+  "message.animal_wellness.animal_inspector.breeding.pregnant": "Pregnant: %s",
+  "message.animal_wellness.animal_inspector.breeding.gestation_cooldown": "Gestation Cooldown: %d",
+  "message.animal_wellness.animal_inspector.breeding.breeding_cooldown": "Breeding Cooldown: %d"
 }
