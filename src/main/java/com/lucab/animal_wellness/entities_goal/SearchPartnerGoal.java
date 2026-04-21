@@ -1,7 +1,6 @@
 package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.AnimalSex;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.server.level.ServerLevel;

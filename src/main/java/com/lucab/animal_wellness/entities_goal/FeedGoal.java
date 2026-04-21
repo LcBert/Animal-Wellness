@@ -25,7 +25,6 @@ public class FeedGoal extends Goal {
     private final PathfinderMob mob;
     private BlockPos targetRackPos;
     private int eatTimer;
-    private boolean isEating;
 
     public FeedGoal(PathfinderMob mob) {
         this.mob = mob;
@@ -74,7 +73,6 @@ public class FeedGoal extends Goal {
 
         double distance = this.mob.position().distanceTo(new Vec3(this.targetRackPos.getX(), this.targetRackPos.getY(), this.targetRackPos.getZ()));
         if (distance <= EAT_DISTANCE) {
-            this.isEating = true;
             this.eatTimer++;
 
 
@@ -90,7 +88,6 @@ public class FeedGoal extends Goal {
                         wellness.setFeed();
                         wellness.incrementAffinity();
                     }
-                    this.isEating = false;
                 }
             }
         }
@@ -117,14 +114,12 @@ public class FeedGoal extends Goal {
     @Override
     public void start() {
         this.eatTimer = 0;
-        this.isEating = true;
     }
 
     @Override
     public void stop() {
         this.targetRackPos = null;
         this.eatTimer = 0;
-        this.isEating = false;
         this.mob.getNavigation().stop();
     }
 }

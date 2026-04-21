@@ -9,8 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
 
 public class EscapePlayerGoal extends Goal {
     private static final double SPEED_MODIFIER = 1.6;
