@@ -38,12 +38,17 @@ public class WellnessConfig {
 
         public static class Breeding {
             public boolean enabled = true;
-            public int gestationTick = 18000; // Tempo dell'animale da quando è incinta per partorire
-            public int breedingCooldown = 6000; // Tempo dell'animale da quando partorisce per poter riprodurre di nuovo
-            public int searchRange = 10; // Raggio di ricerca di un partner
-            public int loveTick = 200; // Tempo dell'animale da quando trova il partner a quando si riproducce
-            public float affinityThreshold = 0.4f; // Affinità minima dell'animale per potersi riprodurre
-            public float sicknessThreshold = 0.8f; // Malattia massima dell'animale per potersi riprodurre
+            public int gestationTick = 18000;
+            public int breedingCooldown = 6000;
+            public int searchRange = 10;
+            public int loveTick = 200;
+            public float affinityThreshold = 0.4f;
+            public float sicknessThreshold = 0.8f;
+        }
+
+        public static class Drop {
+            public float affinityThreshold = 0.8f;
+            public float sicknessThreshold = 0.5f;
         }
 
         public static class Info {
@@ -68,6 +73,7 @@ public class WellnessConfig {
         public Feed feed = new Feed();
         public Sickness sickness = new Sickness();
         public Breeding breeding = new Breeding();
+        public Drop drop = new Drop();
         public Info info = new Info();
     }
 
