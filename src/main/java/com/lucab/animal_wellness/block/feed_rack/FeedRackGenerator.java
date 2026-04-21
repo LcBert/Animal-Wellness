@@ -11,36 +11,39 @@ import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.Map;
+
 public class FeedRackGenerator extends BlockStateProvider {
-    public FeedRackGenerator(PackOutput output, String modId, ExistingFileHelper existingFileHelper) {
+    private final Map<Block, String> textures;
+
+    public FeedRackGenerator(PackOutput output, String modId, ExistingFileHelper existingFileHelper, Map<Block, String> textures) {
         super(output, modId, existingFileHelper);
+        this.textures = textures;
     }
 
     @Override
     protected void registerStatesAndModels() {
-        createRack(AnimalWellness.OAK_FEED_RACK.get(), "oak");
-        createRack(AnimalWellness.SPRUCE_FEED_RACK.get(), "spruce");
+        textures.forEach(this::createRack);
+//        createRack(AnimalWellness.OAK_FEED_RACK.get(), "minecraft:stone");
+//        createRack(AnimalWellness.SPRUCE_FEED_RACK.get(), "minecraft:diorite");
     }
 
     private void createRack(Block block, String woodName) {
         String baseName = BuiltInRegistries.BLOCK.getKey(block).getPath();
-        ResourceLocation woodTexture = ResourceLocation.withDefaultNamespace("block/" + woodName + "_planks");
+//        ResourceLocation woodTexture = ResourceLocation.withDefaultNamespace("block/" + woodName + "_planks");
+        String[] texture = woodName.split(":");
+        ResourceLocation woodTexture = ResourceLocation.fromNamespaceAndPath(texture[0], "block/" + texture[1]);
 
-        ModelFile leftModel = models().withExistingParent(baseName + "_left", modLoc("block/feed_rack_left"))
-                .texture("texture", woodTexture)
-                .texture("particle", woodTexture);
-        ModelFile rightModel = models().withExistingParent(baseName + "_right", modLoc("block/feed_rack_right"))
+        ModelFile model = models().withExistingParent(baseName, modLoc("block/feed_rack"))
                 .texture("texture", woodTexture)
                 .texture("particle", woodTexture);
 
         getVariantBuilder(block).forAllStates(state -> {
             Direction facing = state.getValue(FeedRackBlock.FACING);
-            RackPart part = state.getValue(FeedRackBlock.PART);
-            ModelFile model = (part == RackPart.LEFT) ? leftModel : rightModel;
 
             return ConfiguredModel.builder()
                     .modelFile(model)
-                    .rotationY((int) facing.getOpposite().toYRot()) // Ruota il modello in base al facing
+                    .rotationY((int) facing.getOpposite().toYRot())
                     .build();
         });
     }

@@ -126,7 +126,7 @@ public class FeedRackBlock extends BaseEntityBlock {
 
     @Override
     protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.MODEL;
+        return state.getValue(PART) == RackPart.RIGHT ? RenderShape.INVISIBLE : RenderShape.MODEL;
     }
 
     @Override
