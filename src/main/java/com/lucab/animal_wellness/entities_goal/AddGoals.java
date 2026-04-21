@@ -15,6 +15,7 @@ public class AddGoals {
         if (event.getEntity() instanceof PathfinderMob mob && event.getEntity() instanceof Animal && !event.getLevel().isClientSide()) {
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
             mob.goalSelector.addGoal(2, new FeedGoal(mob));
+            mob.goalSelector.addGoal(3, new SearchPartnerGoal(mob));
 
             mob.goalSelector.getAvailableGoals().removeIf(goal ->
                     goal.getGoal() instanceof TemptGoal

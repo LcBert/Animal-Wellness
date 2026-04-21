@@ -36,6 +36,16 @@ public class WellnessConfig {
             public int hurtTickRate = 100;
         }
 
+        public static class Breeding {
+            public boolean enabled = true;
+            public int gestationTick = 18000; // Tempo dell'animale da quando è incinta per partorire
+            public int breedingCooldown = 6000; // Tempo dell'animale da quando partorisce per poter riprodurre di nuovo
+            public int searchRange = 10; // Raggio di ricerca di un partner
+            public int loveTick = 200; // Tempo dell'animale da quando trova il partner a quando si riproducce
+            public float affinityThreshold = 0.4f; // Affinità minima dell'animale per potersi riprodurre
+            public float sicknessThreshold = 0.8f; // Malattia massima dell'animale per potersi riprodurre
+        }
+
         public static class Info {
             public boolean type = true;
             public boolean affinity = true;
@@ -48,6 +58,7 @@ public class WellnessConfig {
         public Age age = new Age();
         public Feed feed = new Feed();
         public Sickness sickness = new Sickness();
+        public Breeding breeding = new Breeding();
         public Info info = new Info();
     }
 

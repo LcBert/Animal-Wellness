@@ -1,17 +1,24 @@
 package com.lucab.animal_wellness.event;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.attachments.AnimalSex;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -19,6 +26,18 @@ import org.joml.Vector3f;
 
 @EventBusSubscriber(modid = AnimalWellness.MODID)
 public class WellnessEvent {
+    @SubscribeEvent
+    public static void onEntityJoinLeven(EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Animal) {
+            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+            if (!wellness.isTracked()) {
+                wellness.setTracked();
+                wellness.setRandomSex();
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
@@ -33,11 +52,16 @@ public class WellnessEvent {
 
             // Age
             wellness.incrementAge();
-            if ((float) wellness.getAge() / config.age.maxAge <= config.age.babyAgeThreshold) {
+            if (wellness.isBaby()) {
                 animal.setBaby(true);
                 animal.setAge(-10);
             } else {
                 animal.setBaby(false);
+            }
+
+            // Death from old age
+            if (wellness.getAge() >= WellnessConfig.config.age.maxAge) {
+                entity.kill();
             }
 
             // Sickness
@@ -67,9 +91,54 @@ public class WellnessEvent {
                 }
             }
 
-            // Death from old age
-            if (wellness.getAge() >= WellnessConfig.config.age.maxAge) {
-                entity.kill();
+            // Breeding
+            if (config.breeding.enabled) {
+                // Pregnant
+                if (wellness.isPregnant()) {
+                    if (wellness.getGestation() > 0) {
+                        wellness.decreaseGestation();
+                    } else {
+                        wellness.setBreadingCooldown();
+                        wellness.setPregnant(false);
+
+                        if (level instanceof ServerLevel serverLevel) {
+                            AgeableMob baby = animal.getBreedOffspring(serverLevel, animal);
+                            if (baby != null) {
+                                baby.moveTo(animal.getX(), animal.getY(), animal.getZ());
+                                serverLevel.addFreshEntity(baby);
+
+                                serverLevel.sendParticles(ParticleTypes.HEART, baby.getX(), baby.getY(), baby.getZ(),
+                                        5, 0.2, 0.2, 0.2, 0.3);
+                            }
+                        }
+                    }
+                }
+                // Breeding cooldown
+                if (wellness.getBreedingCooldown() > 0) {
+                    wellness.decreaseBreedingCooldown();
+                }
+
+                // Partner
+                if (wellness.canBreeding() && wellness.isMale()) {
+                    if (wellness.getPartner() == null) {
+                        int searchRange = config.breeding.searchRange;
+                        AABB searchBox = animal.getBoundingBox().inflate(searchRange);
+                        LivingEntity nearest = level.getNearestEntity(
+                                (Class<? extends LivingEntity>) animal.getClass(),
+                                TargetingConditions.DEFAULT,
+                                animal,
+                                animal.getX(), animal.getY(), animal.getZ(),
+                                searchBox
+                        );
+                        if (nearest != null) {
+                            WellnessAttachment partnerWellness = nearest.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+                            if (partnerWellness.canBreeding() && partnerWellness.isFemale()) {
+                                wellness.setPartner(nearest.getUUID());
+                                partnerWellness.setPartner(animal.getUUID());
+                            }
+                        }
+                    }
+                }
             }
         }
     }

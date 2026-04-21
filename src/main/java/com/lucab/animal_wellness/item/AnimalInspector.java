@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import java.text.DecimalFormat;
+import java.util.UUID;
 
 public class AnimalInspector extends Item {
     public AnimalInspector() {
@@ -55,6 +56,11 @@ public class AnimalInspector extends Item {
         if (config.info.sickness)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sickness", new DecimalFormat("#.##").format(wellness.getSickness()))
                     .withStyle(ChatFormatting.YELLOW));
+
+        component.append(newLine).append(wellness.getSex().toString());
+        component.append(newLine).append(animal.getUUID().toString());
+        UUID partner = wellness.getPartner();
+        component.append(newLine).append(partner == null ? "null" : partner.toString());
 
         player.displayClientMessage(component, false);
     }
