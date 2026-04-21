@@ -170,7 +170,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
 
     public void setPregnant(boolean pregnant) {
         this.pregnant = pregnant;
-        setGestation();
+        if (pregnant) setGestation();
     }
 
     public boolean isPregnant() {
