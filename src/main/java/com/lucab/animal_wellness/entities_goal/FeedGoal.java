@@ -69,7 +69,7 @@ public class FeedGoal extends Goal {
         BlockPos frontPos = this.targetRackPos.relative(facing.getOpposite());
         Vec3 targetVec = new Vec3(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
 
-        this.mob.getNavigation().moveTo(targetVec.x, targetVec.y, targetVec.z, SPEED_MODIFIER);
+        this.mob.getNavigation().moveTo(targetVec.x, targetVec.y, targetVec.z, 0, SPEED_MODIFIER);
 
         double distance = this.mob.position().distanceTo(new Vec3(this.targetRackPos.getX(), this.targetRackPos.getY(), this.targetRackPos.getZ()));
         if (distance <= EAT_DISTANCE) {
