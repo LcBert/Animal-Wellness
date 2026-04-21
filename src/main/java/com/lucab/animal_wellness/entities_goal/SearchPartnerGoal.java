@@ -3,11 +3,13 @@ package com.lucab.animal_wellness.entities_goal;
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.config.WellnessConfig;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.UUID;
@@ -21,7 +23,7 @@ public class SearchPartnerGoal extends Goal {
 
     public SearchPartnerGoal(PathfinderMob mob) {
         this.mob = mob;
-        this.setFlags(EnumSet.of(Flag.MOVE));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
@@ -54,6 +56,7 @@ public class SearchPartnerGoal extends Goal {
 
         if (mob.distanceToSqr(targetAnimal) > (stopDistance * stopDistance)) {
             this.mob.getNavigation().moveTo(this.targetAnimal, SPEED_MODIFIER);
+            this.mob.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(this.targetAnimal.getX(), this.targetAnimal.getY(), this.targetAnimal.getZ()));
         } else {
             this.mob.getNavigation().stop();
             this.loveTimer++;
