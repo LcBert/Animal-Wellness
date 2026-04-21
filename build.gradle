@@ -167,11 +167,3 @@ idea {
         downloadJavadoc = true
     }
 }
-
-tasks.named("runClient") {
-    dependsOn "runData"
-}
-
-tasks.named("runServer") {
-    dependsOn "runData"
-}

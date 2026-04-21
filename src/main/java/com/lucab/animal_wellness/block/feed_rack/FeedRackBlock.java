@@ -44,7 +44,8 @@ public class FeedRackBlock extends BaseEntityBlock {
         super(Properties.of()
                 .mapColor(MapColor.WOOD)
                 .sound(SoundType.WOOD)
-                .strength(1.5f, 1.0f)
+                .strength(2.0f, 1.0f)
+                .requiresCorrectToolForDrops()
                 .noOcclusion());
 
         this.registerDefaultState(this.getStateDefinition().any()
