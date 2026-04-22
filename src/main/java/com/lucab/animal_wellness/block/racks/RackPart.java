@@ -1,4 +1,4 @@
-package com.lucab.animal_wellness.block.feed_rack;
+package com.lucab.animal_wellness.block.racks;
 
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;

@@ -1,6 +1,6 @@
-package com.lucab.animal_wellness.block.feed_rack;
+package com.lucab.animal_wellness.block.racks.water_rack;
 
-import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.block.racks.RackPart;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +12,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -30,24 +31,24 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FeedRackBlock extends BaseEntityBlock {
-    public static final MapCodec<FeedRackBlock> CODEC = simpleCodec(FeedRackBlock::new);
+public class WaterRackBlock extends BaseEntityBlock {
+    public static final MapCodec<WaterRackBlock> CODEC = simpleCodec(WaterRackBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<RackPart> PART = EnumProperty.create("part", RackPart.class);
-    public static final BooleanProperty FOOD = BooleanProperty.create("food");
+    public static final BooleanProperty WATER = BooleanProperty.create("water");
 
-    public FeedRackBlock(Properties properties) {
+    public WaterRackBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(PART, RackPart.LEFT)
-                .setValue(FOOD, false));
+                .setValue(WATER, false));
     }
 
-    public FeedRackBlock() {
+    public WaterRackBlock() {
         super(Properties.of()
-                .mapColor(MapColor.WOOD)
-                .sound(SoundType.WOOD)
+                .mapColor(MapColor.STONE)
+                .sound(SoundType.STONE)
                 .strength(2.0f, 1.0f)
                 .requiresCorrectToolForDrops()
                 .noOcclusion());
@@ -55,12 +56,12 @@ public class FeedRackBlock extends BaseEntityBlock {
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(PART, RackPart.LEFT)
-                .setValue(FOOD, false));
+                .setValue(WATER, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART, FOOD);
+        builder.add(FACING, PART, WATER);
     }
 
     @Override
@@ -113,15 +114,18 @@ public class FeedRackBlock extends BaseEntityBlock {
                 return this.useItemOn(stack, leftState, level, leftPos, player, hand, newHitResult);
             }
         }
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof FeedRackBlockEntity rack) {
-            if (stack.getItem() == AnimalWellness.ANIMAL_FOOD.get()) {
-                if (rack.addFood()) {
-                    stack.shrink(player.isCreative() ? 0 : 1);
-                    level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof WaterRackBlockEntity rack) {
+            if (stack.getItem() == Items.WATER_BUCKET) {
+                if (rack.addWater()) {
+                    if (!player.isCreative()) {
+                        stack.shrink(1);
+                        player.getInventory().add(new ItemStack(Items.BUCKET));
+                    }
+                    level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
             } else {
-                player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getFood(), FeedRackBlockEntity.MAX_FOOD)), true);
+                player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
             }
         }
         return ItemInteractionResult.CONSUME;
@@ -129,7 +133,7 @@ public class FeedRackBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return new FeedRackBlockEntity(blockPos, blockState);
+        return new WaterRackBlockEntity(blockPos, blockState);
     }
 
     @Override

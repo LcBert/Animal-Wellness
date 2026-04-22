@@ -1,0 +1,106 @@
+package com.lucab.animal_wellness.block.manure;
+
+import com.lucab.animal_wellness.AnimalWellness;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+
+public class ManureBlock extends Block {
+    public static IntegerProperty AMOUNT = IntegerProperty.create("amount", 1, 5);
+
+    public ManureBlock() {
+        super(Properties.of()
+                .mapColor(MapColor.COLOR_BROWN)
+                .sound(SoundType.GRASS)
+                .strength(0.2f)
+                .noOcclusion()
+                .noCollission());
+
+        this.registerDefaultState(this.stateDefinition.any().setValue(AMOUNT, 1));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(AMOUNT);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(AMOUNT, 1);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        switch (state.getValue(AMOUNT)) {
+            case 1:
+                return ManureShape.getStage1Shape();
+            case 2:
+                return ManureShape.getStage2Shape();
+            case 3:
+                return ManureShape.getStage3Shape();
+            case 4:
+                return ManureShape.getStage4Shape();
+            case 5:
+                return ManureShape.getStage5Shape();
+        }
+        return Shapes.block();
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        int amount = state.getValue(AMOUNT);
+        if (level.isClientSide && random.nextInt(10 * (1 - amount / 10)) == 0) {
+            SimpleParticleType flyParticle = AnimalWellness.FLY_PARTICLE.get();
+            level.addParticle(flyParticle, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0, 0);
+        }
+    }
+
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!level.isClientSide) {
+            if (stack.getItem() == AnimalWellness.MANURE_BLOCK_ITEM.get()) {
+                if (placeManure(level, pos)) {
+                    level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+        }
+        return ItemInteractionResult.CONSUME;
+    }
+
+    public static boolean placeManure(Level level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (state.canBeReplaced()) {
+            level.setBlock(pos, AnimalWellness.MANURE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
+            return true;
+        }
+        if (state.getBlock() == AnimalWellness.MANURE_BLOCK.get()) {
+            int amount = state.getValue(ManureBlock.AMOUNT);
+            if (amount < 5) {
+                level.setBlock(pos, AnimalWellness.MANURE_BLOCK.get().defaultBlockState().setValue(ManureBlock.AMOUNT, amount + 1), Block.UPDATE_ALL);
+                return true;
+            }
+        }
+        return false;
+    }
+}

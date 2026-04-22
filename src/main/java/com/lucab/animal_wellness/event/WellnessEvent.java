@@ -1,12 +1,10 @@
 package com.lucab.animal_wellness.event;
 
 import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
+import com.lucab.animal_wellness.block.manure.ManureBlock;
 import com.lucab.animal_wellness.config.WellnessConfig;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
@@ -21,10 +19,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import org.joml.Vector3f;
 
 @EventBusSubscriber(modid = AnimalWellness.MODID)
 public class WellnessEvent {
@@ -37,6 +33,7 @@ public class WellnessEvent {
                 helper.setTracked();
                 helper.setRandomSex();
                 helper.setBirth();
+                helper.setManure();
             }
         }
     }
@@ -62,6 +59,12 @@ public class WellnessEvent {
             // Affinity
             if (level.getGameTime() % 5000 == 0) if (!helper.isFed() && !helper.isHydrated()) {
                 helper.decrementAffinity();
+            }
+
+            // Manure
+            if (helper.canDropManure()) {
+                helper.setManure();
+                ManureBlock.placeManure(level, animal.getOnPos().above());
             }
 
             // Breeding
@@ -108,7 +111,7 @@ public class WellnessEvent {
         Entity entity = event.getEntity();
         WellnessConfig.Config config = WellnessConfig.config;
         WellnessHelper helper = WellnessHelper.getInstance(entity);
-        if (entity instanceof Animal && helper.isConsideredAnimal() && helper.isAdult() && config.drop.affinityDrop) {
+        if (entity instanceof Animal && helper.isConsideredAnimal() && !helper.isBaby() && config.drop.affinityDrop) {
             if (helper.getAffinity() >= config.drop.affinityThreshold) {
                 event.getDrops().forEach(item -> {
                     item.getItem().setCount((int) (item.getItem().getCount() + config.drop.maxDrop * helper.getAffinity()));

@@ -1,4 +1,4 @@
-package com.lucab.animal_wellness.block.water_rack;
+package com.lucab.animal_wellness.block.racks.water_rack;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import net.neoforged.bus.api.SubscribeEvent;

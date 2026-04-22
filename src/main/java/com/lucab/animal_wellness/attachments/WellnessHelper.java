@@ -121,6 +121,19 @@ public class WellnessHelper {
         return getRemainingWater() > 0;
     }
 
+    // Manure
+    public void setManure() {
+        wellness.nextManureTime = new Random().nextLong(level.getGameTime() + 100, level.getGameTime() + 200);
+    }
+
+    public long getRemainingManureTime() {
+        return wellness.nextManureTime - level.getGameTime();
+    }
+
+    public boolean canDropManure() {
+        return getRemainingManureTime() < 0;
+    }
+
     // Sex
     public void setRandomSex() {
         wellness.sex = new Random().nextBoolean() ? AnimalSex.MALE : AnimalSex.FEMALE;

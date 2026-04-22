@@ -1,4 +1,4 @@
-package com.lucab.animal_wellness.block.feed_rack;
+package com.lucab.animal_wellness.block.racks.water_rack;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import net.minecraft.core.BlockPos;
@@ -13,43 +13,43 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class FeedRackBlockEntity extends BlockEntity {
-    public FeedRackBlockEntity(BlockPos pos, BlockState state) {
-        super(AnimalWellness.FEED_RACK_BLOCK_ENTITY.get(), pos, state);
+public class WaterRackBlockEntity extends BlockEntity {
+    public WaterRackBlockEntity(BlockPos pos, BlockState state) {
+        super(AnimalWellness.WATER_RACK_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public static final int MAX_FOOD = 10;
-    private int foodAmount = 0;
+    public static final int MAX_WATER = 10;
+    private int waterAmount = 0;
 
-    public int getFood() {
-        return foodAmount;
+    public int getWater() {
+        return waterAmount;
     }
 
-    public boolean setFood(int amount) {
-        if (amount < 0 || amount > MAX_FOOD) return false;
-        this.foodAmount = amount;
+    public boolean setWater(int amount) {
+        if (amount < 0 || amount > MAX_WATER) return false;
+        this.waterAmount = amount;
         setChanged();
         return true;
     }
 
-    public boolean addFood(int amount) {
-        return setFood(this.foodAmount + amount);
+    public boolean addWater(int amount) {
+        return setWater(this.waterAmount + amount);
     }
 
-    public boolean addFood() {
-        return addFood(1);
+    public boolean addWater() {
+        return addWater(1);
     }
 
-    public boolean removeFood(int amount) {
-        return setFood(this.foodAmount - amount);
+    public boolean removeWater(int amount) {
+        return setWater(this.waterAmount - amount);
     }
 
-    public boolean removeFood() {
-        return removeFood(1);
+    public boolean removeWater() {
+        return removeWater(1);
     }
 
-    public boolean hasFood() {
-        return getFood() > 0;
+    public boolean hasWater() {
+        return getWater() > 0;
     }
 
     @Override
@@ -57,20 +57,20 @@ public class FeedRackBlockEntity extends BlockEntity {
         super.setChanged();
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-            level.setBlock(worldPosition, getBlockState().setValue(FeedRackBlock.FOOD, hasFood()), Block.UPDATE_ALL);
+            level.setBlock(worldPosition, getBlockState().setValue(WaterRackBlock.WATER, hasWater()), Block.UPDATE_ALL);
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("FoodCount", this.foodAmount);
+        tag.putInt("WaterCount", this.waterAmount);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        this.foodAmount = tag.getInt("FoodCount");
+        this.waterAmount = tag.getInt("WaterCount");
     }
 
     @Override

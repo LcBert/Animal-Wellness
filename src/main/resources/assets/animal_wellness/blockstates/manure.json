@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "amount=1": {
+      "model": "animal_wellness:block/manure/manure_1"
+    },
+    "amount=2": {
+      "model": "animal_wellness:block/manure/manure_2"
+    },
+    "amount=3": {
+      "model": "animal_wellness:block/manure/manure_3"
+    },
+    "amount=4": {
+      "model": "animal_wellness:block/manure/manure_4"
+    },
+    "amount=5": {
+      "model": "animal_wellness:block/manure/manure_5"
+    }
+  }
+}

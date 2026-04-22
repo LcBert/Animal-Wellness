@@ -1,13 +1,16 @@
 package com.lucab.animal_wellness;
 
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
-import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
-import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
-import com.lucab.animal_wellness.block.water_rack.WaterRackBlock;
-import com.lucab.animal_wellness.block.water_rack.WaterRackBlockEntity;
+import com.lucab.animal_wellness.block.manure.ManureBlock;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
+import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlock;
+import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -33,10 +36,11 @@ public class AnimalWellness {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPE = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, MODID);
+
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FLY_PARTICLE = PARTICLE_TYPES.register("fly_particle", () -> new SimpleParticleType(true));
 
     // Animal Attachment
     public static final Supplier<AttachmentType<WellnessAttachment>> ANIMAL_WELLNESS_ATTACHMENT = ATTACHMENT_TYPE.register(
@@ -47,6 +51,10 @@ public class AnimalWellness {
 
     // Animal Inspector
     public static final DeferredItem<Item> ANIMAL_INSPECTOR = ITEMS.register("animal_inspector", AnimalInspector::new);
+
+    // Manure Block
+    public static final DeferredBlock<Block> MANURE_BLOCK = BLOCKS.register("manure", ManureBlock::new);
+    public static final DeferredItem<BlockItem> MANURE_BLOCK_ITEM = ITEMS.register("manure", () -> new BlockItem(MANURE_BLOCK.get(), new Item.Properties()));
 
     // Feed rack
     public static final DeferredBlock<Block> OAK_FEED_RACK = BLOCKS.register("oak_feed_rack", () -> new FeedRackBlock());
@@ -78,6 +86,7 @@ public class AnimalWellness {
                     .displayItems((parameters, output) -> {
                         output.accept(ANIMAL_FOOD);
                         output.accept(ANIMAL_INSPECTOR);
+                        output.accept(MANURE_BLOCK_ITEM);
                         output.accept(OAK_FEED_RACK_ITEM);
                         output.accept(SPRUCE_FEED_RACK_ITEM);
                         output.accept(STONE_WATER_RACK_ITEM);
@@ -90,6 +99,7 @@ public class AnimalWellness {
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         ATTACHMENT_TYPE.register(modEventBus);
+        PARTICLE_TYPES.register(modEventBus);
     }
 
     @SubscribeEvent

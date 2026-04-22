@@ -1,12 +1,10 @@
 package com.lucab.animal_wellness.entities_goal;
 
-import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
-import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
-import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
-import com.lucab.animal_wellness.block.water_rack.WaterRackBlock;
-import com.lucab.animal_wellness.block.water_rack.WaterRackBlockEntity;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
+import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlock;
+import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
