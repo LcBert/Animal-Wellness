@@ -123,7 +123,8 @@ public class WellnessHelper {
 
     // Manure
     public void setManure() {
-        wellness.nextManureTime = new Random().nextLong(level.getGameTime() + 100, level.getGameTime() + 200);
+        WellnessConfig.Config config = WellnessConfig.config;
+        wellness.nextManureTime = new Random().nextLong(level.getGameTime() + config.manure.manureTimeMin, level.getGameTime() + config.manure.manureTimeMax);
     }
 
     public long getRemainingManureTime() {

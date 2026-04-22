@@ -62,7 +62,7 @@ public class WellnessEvent {
             }
 
             // Manure
-            if (helper.canDropManure()) {
+            if (helper.canDropManure() && config.manure.enabled) {
                 helper.setManure();
                 ManureBlock.placeManure(level, animal.getOnPos().above());
             }
