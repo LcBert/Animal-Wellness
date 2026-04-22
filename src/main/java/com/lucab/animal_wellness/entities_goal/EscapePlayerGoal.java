@@ -1,6 +1,5 @@
 package com.lucab.animal_wellness.entities_goal;
 
-import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.world.entity.PathfinderMob;
@@ -29,7 +28,7 @@ public class EscapePlayerGoal extends Goal {
         if (targetPlayer == null || targetPlayer.isCreative()) return false;
 
         float affinity = WellnessHelper.getInstance(this.mob).getAffinity();
-        if (affinity >= WellnessConfig.config.affinity.affinityThreshold) return false;
+        if (affinity >= WellnessConfig.config.affinity.escapePlayerThreshold) return false;
 
         if (!this.mob.hasLineOfSight(targetPlayer)) return false;
 

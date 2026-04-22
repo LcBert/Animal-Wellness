@@ -60,10 +60,9 @@ public class WellnessEvent {
             if (helper.isDead()) entity.kill();
 
             // Affinity
-            if (level.getGameTime() % 5000 == 0)
-                if (!helper.isFed() && !helper.isHydrated()) {
-                    helper.decrementAffinity();
-                }
+            if (level.getGameTime() % 5000 == 0) if (!helper.isFed() && !helper.isHydrated()) {
+                helper.decrementAffinity();
+            }
 
             // Breeding
             if (config.breeding.enabled) {
@@ -79,8 +78,7 @@ public class WellnessEvent {
                                 baby.moveTo(animal.getX(), animal.getY(), animal.getZ());
                                 serverLevel.addFreshEntity(baby);
 
-                                serverLevel.sendParticles(ParticleTypes.HEART, baby.getX(), baby.getY(), baby.getZ(),
-                                        5, 0.2, 0.2, 0.2, 0.3);
+                                serverLevel.sendParticles(ParticleTypes.HEART, baby.getX(), baby.getY(), baby.getZ(), 5, 0.2, 0.2, 0.2, 0.3);
                             }
                         }
                     }
@@ -91,13 +89,7 @@ public class WellnessEvent {
                     if (helper.getPartner() == null) {
                         int searchRange = config.breeding.searchRange;
                         AABB searchBox = animal.getBoundingBox().inflate(searchRange);
-                        LivingEntity nearest = level.getNearestEntity(
-                                (Class<? extends LivingEntity>) animal.getClass(),
-                                TargetingConditions.DEFAULT,
-                                animal,
-                                animal.getX(), animal.getY(), animal.getZ(),
-                                searchBox
-                        );
+                        LivingEntity nearest = level.getNearestEntity((Class<? extends LivingEntity>) animal.getClass(), TargetingConditions.DEFAULT, animal, animal.getX(), animal.getY(), animal.getZ(), searchBox);
                         if (nearest != null) {
                             WellnessHelper partnerHelper = WellnessHelper.getInstance(nearest);
                             if (partnerHelper.canBreeding() && partnerHelper.isFemale()) {
@@ -114,20 +106,16 @@ public class WellnessEvent {
     @SubscribeEvent
     public static void onLivingDropsItems(LivingDropsEvent event) {
         Entity entity = event.getEntity();
+        WellnessConfig.Config config = WellnessConfig.config;
         WellnessHelper helper = WellnessHelper.getInstance(entity);
-        if (entity instanceof Animal && helper.isConsideredAnimal()) {
-            WellnessConfig.Config config = WellnessConfig.config;
-            if (helper.isOld() || helper.getAffinity() < config.drop.affinityThreshold) event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingDropsXp(LivingExperienceDropEvent event) {
-        Entity entity = event.getEntity();
-        WellnessHelper helper = WellnessHelper.getInstance(entity);
-        if (entity instanceof Animal && helper.isConsideredAnimal()) {
-            WellnessConfig.Config config = WellnessConfig.config;
-            if (helper.isOld() || helper.getAffinity() < config.drop.affinityThreshold) event.setCanceled(true);
+        if (entity instanceof Animal && helper.isConsideredAnimal() && helper.isAdult() && config.drop.affinityDrop) {
+            if (helper.getAffinity() >= config.drop.affinityThreshold) {
+                event.getDrops().forEach(item -> {
+                    item.getItem().setCount((int) (item.getItem().getCount() + config.drop.maxDrop * helper.getAffinity()));
+                });
+            } else {
+                event.setCanceled(true);
+            }
         }
     }
 

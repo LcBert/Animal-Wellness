@@ -20,7 +20,7 @@ public class WellnessConfig {
 
         public static class Affinity {
             public float affinityRate = 0.1f;
-            public float affinityThreshold = 0.8f;
+            public float escapePlayerThreshold = 0.3f;
         }
 
         public static class Age {
@@ -46,7 +46,9 @@ public class WellnessConfig {
         }
 
         public static class Drop {
-            public float affinityThreshold = 0.8f;
+            public boolean affinityDrop = true;
+            public float affinityThreshold = 0.3f;
+            public int maxDrop = 10;
         }
 
         public static class Info {
@@ -76,7 +78,7 @@ public class WellnessConfig {
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private static final Path CONFIG_PATH = FMLPaths.CONFIGDIR.get().resolve("animal_wellness_server.json");
+    private static final Path CONFIG_PATH = FMLPaths.CONFIGDIR.get().resolve("animal_wellness-server.json");
     public static Config config = new Config();
 
     public static void load() {
