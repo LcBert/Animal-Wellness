@@ -25,12 +25,12 @@ public class EscapePlayerGoal extends Goal {
     @Override
     public boolean canUse() {
         Player targetPlayer = this.mob.level().getNearestPlayer(this.mob, DISTANCE_THRESHOLD);
+        if (targetPlayer == null || targetPlayer.isCreative()) return false;
 
         float affinity = mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get()).getAffinity();
+        if (affinity >= WellnessConfig.config.affinity.affinityThreshold) return false;
 
-        if (targetPlayer == null || targetPlayer.isCreative() || affinity >= WellnessConfig.config.affinity.affinityThreshold) {
-            return false;
-        }
+        if (!this.mob.hasLineOfSight(targetPlayer)) return false;
 
         this.escapePos = DefaultRandomPos.getPosAway(this.mob, 16, 7, targetPlayer.position());
 
