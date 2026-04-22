@@ -25,7 +25,7 @@ public class WellnessConfig {
 
         public static class Age {
             public int maxAge = 20 * 60 * 60 * 24;
-            public float babyAgeThreshold = 0.2f;
+            public float babyAgeThreshold = 0.04f;
             public float adultAgeThreshold = 0.8f;
         }
 
