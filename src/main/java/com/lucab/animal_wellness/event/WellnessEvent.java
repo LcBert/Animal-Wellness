@@ -32,7 +32,8 @@ public class WellnessEvent {
         Entity entity = event.getEntity();
         if (entity instanceof Animal) {
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (WellnessConfig.config.blacklistedEntities.contains(entityId)) return;
+            if (WellnessConfig.config.entityList.entities.contains(entityId) != WellnessConfig.config.entityList.whitelist)
+                return;
             WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) {
                 wellness.setTracked();
@@ -48,7 +49,7 @@ public class WellnessEvent {
         WellnessConfig.Config config = WellnessConfig.config;
         if (entity instanceof Animal animal) {
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (config.blacklistedEntities.contains(entityId)) return;
+            if (config.entityList.entities.contains(entityId) != config.entityList.whitelist) return;
             WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
             if (!wellness.isTracked()) wellness.setTracked();
 

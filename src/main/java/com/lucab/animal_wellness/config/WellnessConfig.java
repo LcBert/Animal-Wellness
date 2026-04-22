@@ -14,6 +14,11 @@ import java.util.List;
 
 public class WellnessConfig {
     public static class Config {
+        public static class EntityList {
+            public boolean whitelist = true;
+            public List<String> entities = List.of("minecraft:cow", "minecraft:pig", "minecraft:sheep", "minecraft:chicken");
+        }
+
         public static class Affinity {
             public float affinityRate = 0.1f;
             public float affinityThreshold = 0.8f;
@@ -72,7 +77,7 @@ public class WellnessConfig {
             public BreedingInfo breedingInfo = new BreedingInfo();
         }
 
-        public List<String> blacklistedEntities = new ArrayList<>();
+        public EntityList entityList = new EntityList();
         public Affinity affinity = new Affinity();
         public Age age = new Age();
         public Feed feed = new Feed();

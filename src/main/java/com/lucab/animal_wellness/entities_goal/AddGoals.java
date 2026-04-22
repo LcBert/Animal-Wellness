@@ -15,8 +15,9 @@ public class AddGoals {
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof PathfinderMob mob && event.getEntity() instanceof Animal && !event.getLevel().isClientSide()) {
+            WellnessConfig.Config config = WellnessConfig.config;
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (WellnessConfig.config.blacklistedEntities.contains(entityId)) return;
+            if (config.entityList.entities.contains(entityId) != config.entityList.whitelist) return;
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
             mob.goalSelector.addGoal(2, new FeedGoal(mob));
             mob.goalSelector.addGoal(3, new SearchPartnerGoal(mob));
