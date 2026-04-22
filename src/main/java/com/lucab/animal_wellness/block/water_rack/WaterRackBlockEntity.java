@@ -19,7 +19,7 @@ public class WaterRackBlockEntity extends BlockEntity {
         super(AnimalWellness.WATER_RACK_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public final int MAX_WATER = 10;
+    public static final int MAX_WATER = 10;
     private int waterAmount = 0;
 
     public int getWater() {

@@ -18,7 +18,7 @@ public class FeedRackBlockEntity extends BlockEntity {
         super(AnimalWellness.FEED_RACK_BLOCK_ENTITY.get(), pos, state);
     }
 
-    public final int MAX_FOOD = 10;
+    public static final int MAX_FOOD = 10;
     private int foodAmount = 0;
 
     public int getFood() {

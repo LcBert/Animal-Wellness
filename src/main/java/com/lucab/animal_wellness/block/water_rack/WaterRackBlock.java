@@ -1,10 +1,12 @@
 package com.lucab.animal_wellness.block.water_rack;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.block.feed_rack.RackPart;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -124,6 +126,8 @@ public class WaterRackBlock extends BaseEntityBlock {
                     level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
+            } else {
+                player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
             }
         }
         return ItemInteractionResult.CONSUME;
