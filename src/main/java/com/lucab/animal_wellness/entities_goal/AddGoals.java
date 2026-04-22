@@ -22,8 +22,8 @@ public class AddGoals {
                 && helper.isConsideredAnimal()
                 && !event.getLevel().isClientSide()) {
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
-            mob.goalSelector.addGoal(2, new FeedGoal(mob));
-            mob.goalSelector.addGoal(3, new SearchPartnerGoal(mob));
+            mob.goalSelector.addGoal(1, new FeedGoal(mob));
+            mob.goalSelector.addGoal(1, new SearchPartnerGoal(mob));
 
             mob.goalSelector.getAvailableGoals().removeIf(goal ->
                     goal.getGoal() instanceof TemptGoal
