@@ -77,21 +77,6 @@ public class AnimalWellness {
                     STONE_WATER_RACK.get()
             ).build(null));
 
-    // Creative Tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ANIMAL_WELLNESS_TAB = CREATIVE_MODE_TABS
-            .register("animal_wellness_tab", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.animal_wellness"))
-                    .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(Items.WHEAT::getDefaultInstance)
-                    .displayItems((parameters, output) -> {
-                        output.accept(ANIMAL_FOOD);
-                        output.accept(ANIMAL_INSPECTOR);
-                        output.accept(MANURE_BLOCK_ITEM);
-                        output.accept(OAK_FEED_RACK_ITEM);
-                        output.accept(SPRUCE_FEED_RACK_ITEM);
-                        output.accept(STONE_WATER_RACK_ITEM);
-                    }).build());
-
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {
         NeoForge.EVENT_BUS.register(this);
         BLOCKS.register(modEventBus);
@@ -100,6 +85,22 @@ public class AnimalWellness {
         CREATIVE_MODE_TABS.register(modEventBus);
         ATTACHMENT_TYPE.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
+
+        addCreativeTab();
+    }
+
+    public void addCreativeTab() {
+        CREATIVE_MODE_TABS.register("animal_wellness_tab", () -> CreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.animal_wellness"))
+                .icon(() -> ANIMAL_FOOD.get().getDefaultInstance())
+                .displayItems((parameters, output) -> {
+                    output.accept(ANIMAL_FOOD);
+                    output.accept(ANIMAL_INSPECTOR);
+                    output.accept(MANURE_BLOCK_ITEM);
+                    output.accept(OAK_FEED_RACK_ITEM);
+                    output.accept(SPRUCE_FEED_RACK_ITEM);
+                    output.accept(STONE_WATER_RACK_ITEM);
+                }).build());
     }
 
     @SubscribeEvent
