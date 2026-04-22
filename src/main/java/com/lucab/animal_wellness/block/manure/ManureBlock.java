@@ -51,19 +51,14 @@ public class ManureBlock extends Block {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        switch (state.getValue(AMOUNT)) {
-            case 1:
-                return ManureShape.getStage1Shape();
-            case 2:
-                return ManureShape.getStage2Shape();
-            case 3:
-                return ManureShape.getStage3Shape();
-            case 4:
-                return ManureShape.getStage4Shape();
-            case 5:
-                return ManureShape.getStage5Shape();
-        }
-        return Shapes.block();
+        return switch (state.getValue(AMOUNT)) {
+            case 1 -> ManureShape.getStage1Shape();
+            case 2 -> ManureShape.getStage2Shape();
+            case 3 -> ManureShape.getStage3Shape();
+            case 4 -> ManureShape.getStage4Shape();
+            case 5 -> ManureShape.getStage5Shape();
+            default -> Shapes.block();
+        };
     }
 
     @Override
@@ -71,21 +66,22 @@ public class ManureBlock extends Block {
         int amount = state.getValue(AMOUNT);
         if (level.isClientSide && random.nextInt(10 * (1 - amount / 10)) == 0) {
             SimpleParticleType flyParticle = AnimalWellness.FLY_PARTICLE.get();
-            level.addParticle(flyParticle, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0, 0, 0);
+            level.addParticle(flyParticle, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0, 0);
         }
     }
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
-            if (stack.getItem() == AnimalWellness.MANURE_BLOCK_ITEM.get()) {
-                if (placeManure(level, pos)) {
-                    level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return ItemInteractionResult.SUCCESS;
-                }
+        if (stack.getItem() == AnimalWellness.MANURE_BLOCK_ITEM.get()) {
+            if (placeManure(level, pos)) {
+                level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                stack.shrink(player.isCreative() ? 0 : 1);
+                return ItemInteractionResult.SUCCESS;
+            } else {
+                return ItemInteractionResult.CONSUME;
             }
         }
-        return ItemInteractionResult.CONSUME;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static boolean placeManure(Level level, BlockPos pos) {
