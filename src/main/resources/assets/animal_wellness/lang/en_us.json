@@ -12,9 +12,10 @@
   "message.animal_wellness.animal_inspector.age_adult": "Age: Adult",
   "message.animal_wellness.animal_inspector.age_old": "Age: Old",
   "message.animal_wellness.animal_inspector.sex": "Sex: %s",
-  "message.animal_wellness.animal_inspector.food": "Food %d",
-  "message.animal_wellness.animal_inspector.hydration": "Hydration %d",
-  "message.animal_wellness.animal_inspector.sickness": "Sickness: %s",
+  "message.animal_wellness.animal_inspector.food.true": "Food: §2Satisfied§r",
+  "message.animal_wellness.animal_inspector.food.false": "Food: §4Hungry§r",
+  "message.animal_wellness.animal_inspector.hydration.true": "Hydration: §2Hydrated§r",
+  "message.animal_wellness.animal_inspector.hydration.false": "Hydration: §4Thirsty§r",
   "message.animal_wellness.animal_inspector.breeding.pregnant": "Pregnant: %s",
   "message.animal_wellness.animal_inspector.breeding.gestation_cooldown": "Gestation Cooldown: %d",
   "message.animal_wellness.animal_inspector.breeding.breeding_cooldown": "Breeding Cooldown: %d"

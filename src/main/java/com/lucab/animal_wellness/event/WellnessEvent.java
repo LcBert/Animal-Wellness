@@ -2,6 +2,7 @@ package com.lucab.animal_wellness.event;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -28,16 +29,14 @@ import org.joml.Vector3f;
 @EventBusSubscriber(modid = AnimalWellness.MODID)
 public class WellnessEvent {
     @SubscribeEvent
-    public static void onEntityJoinLeven(EntityJoinLevelEvent event) {
+    public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Animal) {
-            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (WellnessConfig.config.entityList.entities.contains(entityId) != WellnessConfig.config.entityList.whitelist)
-                return;
-            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-            if (!wellness.isTracked()) {
-                wellness.setTracked();
-                wellness.setRandomSex();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Animal && helper.isConsideredAnimal() && !event.getLevel().isClientSide) {
+            if (!helper.isTracked()) {
+                helper.setTracked();
+                helper.setRandomSex();
+                helper.setBirth();
             }
         }
     }
@@ -46,67 +45,33 @@ public class WellnessEvent {
     public static void onEntityTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
         Level level = entity.level();
+        if (level.isClientSide) return;
         WellnessConfig.Config config = WellnessConfig.config;
-        if (entity instanceof Animal animal) {
-            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (config.entityList.entities.contains(entityId) != config.entityList.whitelist) return;
-            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-            if (!wellness.isTracked()) wellness.setTracked();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
 
-            // Food
-            if (wellness.isFed()) wellness.decreaseFoodTick();
-            if (wellness.isHydrated()) wellness.decreaseWaterTick();
-
+        if (entity instanceof Animal animal && helper.isConsideredAnimal()) {
             // Age
-            wellness.incrementAge();
-            if (wellness.isBaby()) {
+            if (helper.isBaby()) {
                 animal.setBaby(true);
                 animal.setAge(-10);
             } else {
                 animal.setBaby(false);
             }
+            if (helper.isDead()) entity.kill();
 
-            // Death from old age
-            if (wellness.getAge() >= WellnessConfig.config.age.maxAge) {
-                entity.kill();
-            }
-
-            // Sickness
-            if (config.sickness.enabled) {
-                if (entity.tickCount % 20 == 0) {
-                    if (wellness.isFed() && wellness.isHydrated()) {
-                        wellness.removeSickness();
-                    } else {
-                        wellness.addSickness();
-                    }
+            // Affinity
+            if (level.getGameTime() % 5000 == 0)
+                if (!helper.isFed() && !helper.isHydrated()) {
+                    helper.decrementAffinity();
                 }
-
-                // Hurt
-                if (entity.tickCount % config.sickness.hurtTickRate == 0 && wellness.getSickness() >= config.sickness.sicknessThreshold) {
-                    entity.hurt(level.damageSources().generic(), 1.0f);
-                }
-
-                // Particles
-                if (wellness.getSickness() >= config.sickness.sicknessThreshold) {
-                    DustParticleOptions dustParticle = new DustParticleOptions(new Vector3f(0.0f, 1.0f, 0.0f), 0.5f);
-                    if (level instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(dustParticle,
-                                entity.getX(), entity.getY() + 0.5, entity.getZ(),
-                                5, 0.2f, 0.2f, 0.2f, 0.3f
-                        );
-                    }
-                }
-            }
 
             // Breeding
             if (config.breeding.enabled) {
                 // Pregnant
-                if (wellness.isPregnant()) {
-                    if (wellness.getGestation() > 0) {
-                        wellness.decreaseGestation();
-                    } else {
-                        wellness.setBreadingCooldown();
-                        wellness.setPregnant(false);
+                if (helper.isPregnant()) {
+                    if (helper.isGestationCompleted()) {
+                        helper.setBreeding();
+                        helper.setPregnant(false);
 
                         if (level instanceof ServerLevel serverLevel) {
                             AgeableMob baby = animal.getBreedOffspring(serverLevel, animal);
@@ -120,14 +85,10 @@ public class WellnessEvent {
                         }
                     }
                 }
-                // Breeding cooldown
-                if (wellness.getBreedingCooldown() > 0) {
-                    wellness.decreaseBreedingCooldown();
-                }
 
                 // Partner
-                if (wellness.canBreeding() && wellness.isMale()) {
-                    if (wellness.getPartner() == null) {
+                if (helper.canBreeding() && helper.isMale()) {
+                    if (helper.getPartner() == null) {
                         int searchRange = config.breeding.searchRange;
                         AABB searchBox = animal.getBoundingBox().inflate(searchRange);
                         LivingEntity nearest = level.getNearestEntity(
@@ -138,10 +99,10 @@ public class WellnessEvent {
                                 searchBox
                         );
                         if (nearest != null) {
-                            WellnessAttachment partnerWellness = nearest.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-                            if (partnerWellness.canBreeding() && partnerWellness.isFemale()) {
-                                wellness.setPartner(nearest.getUUID());
-                                partnerWellness.setPartner(animal.getUUID());
+                            WellnessHelper partnerHelper = WellnessHelper.getInstance(nearest);
+                            if (partnerHelper.canBreeding() && partnerHelper.isFemale()) {
+                                helper.setPartner(nearest.getUUID());
+                                partnerHelper.setPartner(animal.getUUID());
                             }
                         }
                     }
@@ -153,34 +114,28 @@ public class WellnessEvent {
     @SubscribeEvent
     public static void onLivingDropsItems(LivingDropsEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Animal) {
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Animal && helper.isConsideredAnimal()) {
             WellnessConfig.Config config = WellnessConfig.config;
-            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-            if (wellness.isOld()
-                    || wellness.getAffinity() < config.drop.affinityThreshold
-                    || wellness.getSickness() > config.drop.sicknessThreshold) {
-                event.setCanceled(true);
-            }
+            if (helper.isOld() || helper.getAffinity() < config.drop.affinityThreshold) event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onLivingDropsXp(LivingExperienceDropEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof Animal) {
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Animal && helper.isConsideredAnimal()) {
             WellnessConfig.Config config = WellnessConfig.config;
-            WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-            if (wellness.isOld()
-                    || wellness.getAffinity() < config.drop.affinityThreshold
-                    || wellness.getSickness() > config.drop.sicknessThreshold) {
-                event.setCanceled(true);
-            }
+            if (helper.isOld() || helper.getAffinity() < config.drop.affinityThreshold) event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onAnimalFeed(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof Animal animal) {
+        Entity entity = event.getTarget();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Animal animal && helper.isConsideredAnimal()) {
             ItemStack stack = event.getItemStack();
             if (animal.isFood(stack)) {
                 event.setCanceled(true);

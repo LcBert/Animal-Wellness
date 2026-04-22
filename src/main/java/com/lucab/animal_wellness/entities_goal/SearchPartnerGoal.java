@@ -2,6 +2,7 @@ package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
@@ -18,18 +19,20 @@ public class SearchPartnerGoal extends Goal {
     private static final double SPEED_MODIFIER = 1.2;
 
     private final PathfinderMob mob;
+    private final WellnessHelper helper;
     private LivingEntity targetAnimal;
     private int loveTimer = 0;
 
     public SearchPartnerGoal(PathfinderMob mob) {
         this.mob = mob;
+        this.helper = WellnessHelper.getInstance(mob);
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
         WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-        UUID targetUUID = wellness.getPartner();
+        UUID targetUUID = this.helper.getPartner();
         if (targetUUID == null) return false;
 
         if (this.targetAnimal == null || !this.targetAnimal.getUUID().equals(targetUUID)) {
@@ -72,22 +75,21 @@ public class SearchPartnerGoal extends Goal {
     public void stop() {
         this.mob.getNavigation().stop();
 
-        WellnessAttachment modWellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-        WellnessAttachment targetWellness = this.targetAnimal.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+        WellnessHelper targetHelper = WellnessHelper.getInstance(this.targetAnimal);
 
-        if (modWellness.isFemale()) {
-            modWellness.setPregnant(true);
+        if (this.helper.isFemale()) {
+            this.helper.setPregnant(true);
         } else {
-            modWellness.setBreadingCooldown();
+            this.helper.setBreeding();
         }
 
-        if (targetWellness.isFemale()) {
-            targetWellness.setPregnant(true);
+        if (targetHelper.isFemale()) {
+            targetHelper.setPregnant(true);
         } else {
-            targetWellness.setBreadingCooldown();
+            targetHelper.setBreeding();
         }
 
-        modWellness.removePartner();
-        targetWellness.removePartner();
+        this.helper.removePartner();
+        targetHelper.removePartner();
     }
 }

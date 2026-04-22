@@ -2,6 +2,7 @@ package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.block.water_rack.WaterRackBlock;
@@ -27,6 +28,7 @@ public class FeedGoal extends Goal {
     private static final double EAT_DISTANCE_SQR = 4.0;
 
     private final PathfinderMob mob;
+    private final WellnessHelper helper;
     private BlockPos targetRackPos;
     private RackType rackType;
     private int eatTimer;
@@ -34,7 +36,7 @@ public class FeedGoal extends Goal {
 
     public FeedGoal(PathfinderMob mob) {
         this.mob = mob;
-        // Flag.MOVE: controls movement, Flag.LOOK: controls head rotation
+        this.helper = WellnessHelper.getInstance(mob);
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
@@ -43,17 +45,15 @@ public class FeedGoal extends Goal {
         // Optimization: Throttle the search so it doesn't run every single tick for every animal
         if (this.mob.getRandom().nextInt(10) != 0 && targetRackPos == null) return false;
 
-        WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-
         // Don't search if the animal is already full
-        if (wellness.isFed() && wellness.isHydrated()) return false;
+        if (this.helper.isFed() && this.helper.isHydrated()) return false;
 
-        if (!wellness.isFed()) {
+        if (!this.helper.isFed()) {
             this.targetRackPos = findNearestFeedRack();
             this.rackType = RackType.FEED;
             if (this.targetRackPos != null) return true;
         }
-        if (!wellness.isHydrated()) {
+        if (!this.helper.isHydrated()) {
             this.targetRackPos = findNearestWaterRack();
             this.rackType = RackType.WATER;
             if (this.targetRackPos != null) return true;
@@ -124,8 +124,6 @@ public class FeedGoal extends Goal {
         if (distSqr <= EAT_DISTANCE_SQR) {
             this.eatTimer++;
 
-            WellnessAttachment wellness = this.mob.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-
             // Play eating sound once per second (20 ticks)
             if (eatTimer % 20 == 0) {
                 SoundEvent sound = this.rackType == RackType.FEED ? SoundEvents.GRASS_BREAK : SoundEvents.GENERIC_DRINK;
@@ -136,12 +134,12 @@ public class FeedGoal extends Goal {
             if (this.eatTimer >= WellnessConfig.config.feed.eatTime) {
                 if (level.getBlockEntity(this.targetRackPos) instanceof FeedRackBlockEntity feedRack) {
                     feedRack.removeFood();
-                    wellness.setFood();
-                    wellness.incrementAffinity();
+                    this.helper.setFood();
+                    this.helper.incrementAffinity();
                     this.stop(); // Task complete
                 } else if (level.getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {
                     waterRack.removeWater();
-                    wellness.setWater();
+                    this.helper.setWater();
                 }
             }
         }
@@ -149,6 +147,10 @@ public class FeedGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        // Stop if the animal is already fed/hydrated
+        if (this.rackType == RackType.FEED && this.helper.isFed()) return false;
+        if (this.rackType == RackType.WATER && this.helper.isHydrated()) return false;
+
         // Stop if the rack is destroyed, emptied, or the timer finishes
         if (this.targetRackPos == null || eatTimer >= WellnessConfig.config.feed.eatTime) return false;
 

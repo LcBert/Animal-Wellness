@@ -1,271 +1,51 @@
 package com.lucab.animal_wellness.attachments;
 
-import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
 import java.util.UUID;
 
 public class WellnessAttachment implements INBTSerializable<CompoundTag> {
-    // Tracked
-    private boolean tracked = false;
-
-    public void setTracked() {
-        this.tracked = true;
-    }
-
-    public boolean isTracked() {
-        return this.tracked;
-    }
-
-    // Affinity
-    private float affinity;
-
-    public void setAffinity(float amount) {
-        this.affinity = Math.clamp(amount, 0.0f, 1.0f);
-    }
-
-    public void incrementAffinity() {
-        setAffinity(affinity + WellnessConfig.config.affinity.affinityRate);
-    }
-
-    public void decrementAffinity() {
-        setAffinity(affinity - WellnessConfig.config.affinity.affinityRate);
-    }
-
-    public float getAffinity() {
-        return this.affinity;
-    }
-
-    // Age
-    private int age = 0;
-
-    public void incrementAge() {
-        this.age++;
-    }
-
-    public int getAge() {
-        return this.age;
-    }
-
-    public boolean isBaby() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return (float) this.age / config.age.maxAge <= config.age.babyAgeThreshold;
-    }
-
-    public boolean isAdult() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return !isBaby() && (float) this.age / config.age.maxAge <= config.age.adultAgeThreshold;
-    }
-
-    public boolean isOld() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return !isBaby() && !isAdult();
-    }
-
-
-    // Food
-    private int foodTick = 0;
-
-    public void setFood() {
-        this.foodTick = WellnessConfig.config.feed.maxFeed;
-    }
-
-    public void decreaseFoodTick() {
-        this.foodTick = Math.max(this.foodTick - 1, 0);
-    }
-
-    public int getFoodTick() {
-        return this.foodTick;
-    }
-
-    public boolean isFed() {
-        return this.foodTick > 0;
-    }
-
-    // Water
-    private int waterTick = 0;
-
-    public void setWater() {
-        this.waterTick = WellnessConfig.config.feed.maxWater;
-    }
-
-    public void decreaseWaterTick() {
-        this.waterTick = Math.max(this.waterTick - 1, 0);
-    }
-
-    public int getWaterTick() {
-        return this.waterTick;
-    }
-
-    public boolean isHydrated() {
-        return this.waterTick > 0;
-    }
-
-    // Sickness
-    private float sickness = 0.0f;
-
-    public void setSickness(float amount) {
-        this.sickness = Math.clamp(amount, 0.0f, 1.0f);
-    }
-
-    public void addSickness() {
-        setSickness(this.sickness + WellnessConfig.config.sickness.sicknessRate);
-    }
-
-    public void removeSickness() {
-        setSickness(this.sickness - WellnessConfig.config.sickness.sicknessRate);
-    }
-
-    public float getSickness() {
-        return this.sickness;
-    }
-
-    // Breeding
-    private AnimalSex sex = AnimalSex.MALE;
-    private UUID partner = null;
-    private int gestationCooldown = 0;
-    private int breedingCooldown = 0;
-    private boolean pregnant = false;
-
-    public void setSex(AnimalSex sex) {
-        this.sex = sex;
-    }
-
-    public void setRandomSex() {
-        setSex(new Random().nextBoolean() ? AnimalSex.MALE : AnimalSex.FEMALE);
-    }
-
-    public AnimalSex getSex() {
-        return this.sex;
-    }
-
-    public boolean isMale() {
-        return getSex() == AnimalSex.MALE;
-    }
-
-    public boolean isFemale() {
-        return getSex() == AnimalSex.FEMALE;
-    }
-
-    public void setPartner(UUID partner) {
-        this.partner = partner;
-    }
-
-    public void removePartner() {
-        this.partner = null;
-    }
-
-    public UUID getPartner() {
-        return this.partner;
-    }
-
-    public void setGestation() {
-        this.gestationCooldown = WellnessConfig.config.breeding.gestationTick;
-    }
-
-    public void decreaseGestation() {
-        this.gestationCooldown = Math.max(this.gestationCooldown - 1, 0);
-    }
-
-    public int getGestation() {
-        return this.gestationCooldown;
-    }
-
-    public void setBreadingCooldown() {
-        this.breedingCooldown = WellnessConfig.config.breeding.breedingCooldown;
-    }
-
-    public void decreaseBreedingCooldown() {
-        this.breedingCooldown = Math.max(this.breedingCooldown - 1, 0);
-    }
-
-    public int getBreedingCooldown() {
-        return this.breedingCooldown;
-    }
-
-    public void setPregnant(boolean pregnant) {
-        this.pregnant = pregnant;
-        if (pregnant) setGestation();
-    }
-
-    public boolean isPregnant() {
-        return this.pregnant;
-    }
-
-    public boolean canBreeding() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return this.breedingCooldown == 0
-                && this.gestationCooldown == 0
-                && !isPregnant()
-                && getPartner() == null
-                && this.isAdult()
-                && getAffinity() >= config.breeding.affinityThreshold
-                && getSickness() <= config.breeding.sicknessThreshold;
-    }
+    public boolean tracked = false;
+    public float affinity;
+    public long birthTime;
+    public long lastFoodTime = 0;
+    public long lastWaterTime = 0;
+    public AnimalSex sex = AnimalSex.MALE;
+    public UUID partner = null;
+    public boolean pregnant = false;
+    public long gestationTime = 0;
+    public long breedingTime = 0;
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        // Save tracked
-        tag.putBoolean("tracked", this.tracked);
-
-        // Save affinity
-        tag.putFloat("affinity", this.affinity);
-
-        // Save age
-        tag.putInt("age", this.age);
-
-        // Save food tick
-        tag.putInt("feedTick", this.foodTick);
-
-        // Save water tick
-        tag.putInt("waterTick", this.waterTick);
-
-        // Save sickness
-        tag.putFloat("sickness", this.sickness);
-
-        // Save sex
-        tag.putString("male", this.sex.toString());
-
-        // Save breeding
-        tag.putInt("breedingCooldown", this.breedingCooldown);
-        tag.putInt("gestationCooldown", this.gestationCooldown);
-        tag.putBoolean("pregnant", this.pregnant);
+        tag.putBoolean("tracked", tracked);
+        tag.putFloat("affinity", affinity);
+        tag.putLong("birthTime", birthTime);
+        tag.putLong("lastFoodTime", lastFoodTime);
+        tag.putLong("lastWaterTime", lastWaterTime);
+        tag.putString("sex", sex.name());
+        tag.putBoolean("pregnant", pregnant);
+        tag.putLong("pregnantTime", gestationTime);
+        tag.putLong("breedingTime", breedingTime);
 
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
-        // Load tracked
-        this.tracked = tag.getBoolean("tracked");
-
-        // Load affinity
-        this.affinity = tag.getFloat("affinity");
-
-        // Load age
-        this.age = tag.getInt("age");
-
-        // Load food tick
-        this.foodTick = tag.getInt("feedTick");
-
-        // Load water tick
-        this.waterTick = tag.getInt("waterTick");
-
-        // Load sickness
-        this.sickness = tag.getFloat("sickness");
-
-        // Load sex
-        this.sex = AnimalSex.valueOf(tag.getString("male"));
-
-        // Load breeding
-        this.breedingCooldown = tag.getInt("breedingCooldown");
-        this.gestationCooldown = tag.getInt("gestationCooldown");
-        this.pregnant = tag.getBoolean("pregnant");
+        tracked = tag.getBoolean("tracked");
+        affinity = tag.getFloat("affinity");
+        birthTime = tag.getLong("birthTime");
+        lastFoodTime = tag.getLong("lastFoodTime");
+        lastWaterTime = tag.getLong("lastWaterTime");
+        sex = AnimalSex.valueOf(tag.getString("sex"));
+        pregnant = tag.getBoolean("pregnant");
+        gestationTime = tag.getLong("pregnantTime");
+        breedingTime = tag.getLong("breedingTime");
     }
 }

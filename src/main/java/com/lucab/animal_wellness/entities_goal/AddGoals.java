@@ -1,8 +1,10 @@
 package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.animal.Animal;
@@ -14,10 +16,11 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public class AddGoals {
     @SubscribeEvent
     public static void onEntityJoin(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof PathfinderMob mob && event.getEntity() instanceof Animal && !event.getLevel().isClientSide()) {
-            WellnessConfig.Config config = WellnessConfig.config;
-            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()).toString();
-            if (config.entityList.entities.contains(entityId) != config.entityList.whitelist) return;
+        Entity entity = event.getEntity();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Animal mob
+                && helper.isConsideredAnimal()
+                && !event.getLevel().isClientSide()) {
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
             mob.goalSelector.addGoal(2, new FeedGoal(mob));
             mob.goalSelector.addGoal(3, new SearchPartnerGoal(mob));

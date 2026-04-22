@@ -9,7 +9,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WellnessConfig {
@@ -37,26 +36,17 @@ public class WellnessConfig {
             public int eatTime = 100;
         }
 
-        public static class Sickness {
-            public boolean enabled = true;
-            public float sicknessRate = 0.001f;
-            public float sicknessThreshold = 1.0f;
-            public int hurtTickRate = 100;
-        }
-
         public static class Breeding {
             public boolean enabled = true;
-            public int gestationTick = 18000;
-            public int breedingCooldown = 6000;
+            public int pregnantTime = 18000;
+            public int breedingTime = 6000;
             public int searchRange = 10;
             public int loveTick = 200;
             public float affinityThreshold = 0.4f;
-            public float sicknessThreshold = 0.8f;
         }
 
         public static class Drop {
             public float affinityThreshold = 0.8f;
-            public float sicknessThreshold = 0.5f;
         }
 
         public static class Info {
@@ -73,7 +63,6 @@ public class WellnessConfig {
             public boolean sex = true;
             public boolean food = true;
             public boolean hydration = true;
-            public boolean sickness = true;
             public BreedingInfo breedingInfo = new BreedingInfo();
         }
 
@@ -81,7 +70,6 @@ public class WellnessConfig {
         public Affinity affinity = new Affinity();
         public Age age = new Age();
         public Feed feed = new Feed();
-        public Sickness sickness = new Sickness();
         public Breeding breeding = new Breeding();
         public Drop drop = new Drop();
         public Info info = new Info();
