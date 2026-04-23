@@ -2,6 +2,7 @@ package com.lucab.animal_wellness.block.manure;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,7 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -52,11 +56,11 @@ public class ManureBlock extends Block {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(AMOUNT)) {
-            case 1 -> ManureShape.getStage1Shape();
-            case 2 -> ManureShape.getStage2Shape();
-            case 3 -> ManureShape.getStage3Shape();
-            case 4 -> ManureShape.getStage4Shape();
-            case 5 -> ManureShape.getStage5Shape();
+            case 1 -> Block.box(5, 0, 5, 11, 1, 11);
+            case 2 -> Block.box(4, 0, 4, 12, 2, 12);
+            case 3 -> Block.box(3, 0, 3, 14, 3, 13);
+            case 4 -> Block.box(2, 0, 2, 14, 4, 14);
+            case 5 -> Block.box(1, 0, 1, 15, 6, 15);
             default -> Shapes.block();
         };
     }
@@ -68,6 +72,20 @@ public class ManureBlock extends Block {
             SimpleParticleType flyParticle = AnimalWellness.FLY_PARTICLE.get();
             level.addParticle(flyParticle, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0, 0);
         }
+    }
+
+    @Override
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        BlockPos surfacePos = pos.below();
+        return canSupportRigidBlock(level, surfacePos) || level.getBlockState(surfacePos).isFaceSturdy(level, surfacePos, Direction.UP);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (!state.canSurvive(level, pos)) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -86,8 +104,9 @@ public class ManureBlock extends Block {
 
     public static boolean placeManure(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        if (state.canBeReplaced()) {
-            level.setBlock(pos, AnimalWellness.MANURE_BLOCK.get().defaultBlockState(), Block.UPDATE_ALL);
+        BlockState newState = AnimalWellness.MANURE_BLOCK.get().defaultBlockState();
+        if (state.canBeReplaced() && newState.canSurvive(level, pos)) {
+            level.setBlock(pos, newState, Block.UPDATE_ALL);
             return true;
         }
         if (state.getBlock() == AnimalWellness.MANURE_BLOCK.get()) {
