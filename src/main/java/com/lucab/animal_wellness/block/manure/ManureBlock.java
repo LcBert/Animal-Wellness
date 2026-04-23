@@ -72,7 +72,7 @@ public class ManureBlock extends Block {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (stack.getItem() == AnimalWellness.MANURE_BLOCK_ITEM.get()) {
+        if (stack.getItem() == AnimalWellness.MANURE.get()) {
             if (placeManure(level, pos)) {
                 level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 stack.shrink(player.isCreative() ? 0 : 1);

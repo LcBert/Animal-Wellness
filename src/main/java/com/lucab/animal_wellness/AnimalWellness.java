@@ -54,7 +54,7 @@ public class AnimalWellness {
 
     // Manure Block
     public static final DeferredBlock<Block> MANURE_BLOCK = BLOCKS.register("manure", ManureBlock::new);
-    public static final DeferredItem<BlockItem> MANURE_BLOCK_ITEM = ITEMS.register("manure", () -> new BlockItem(MANURE_BLOCK.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> MANURE = ITEMS.register("manure", () -> new BlockItem(MANURE_BLOCK.get(), new Item.Properties()));
 
     // Feed rack
     public static final DeferredBlock<Block> OAK_FEED_RACK = BLOCKS.register("oak_feed_rack", () -> new FeedRackBlock());
@@ -96,7 +96,7 @@ public class AnimalWellness {
                 .displayItems((parameters, output) -> {
                     output.accept(ANIMAL_FOOD);
                     output.accept(ANIMAL_INSPECTOR);
-                    output.accept(MANURE_BLOCK_ITEM);
+                    output.accept(MANURE);
                     output.accept(OAK_FEED_RACK_ITEM);
                     output.accept(SPRUCE_FEED_RACK_ITEM);
                     output.accept(STONE_WATER_RACK_ITEM);
