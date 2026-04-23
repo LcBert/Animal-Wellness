@@ -30,6 +30,8 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         tag.putLong("birthTime", birthTime);
         tag.putLong("lastFoodTime", lastFoodTime);
         tag.putLong("lastWaterTime", lastWaterTime);
+        tag.putBoolean("hasManure", hasManure);
+        tag.putLong("nextManureTime", nextManureTime);
         tag.putString("sex", sex.name());
         tag.putBoolean("pregnant", pregnant);
         tag.putLong("pregnantTime", gestationTime);
@@ -45,6 +47,8 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         birthTime = tag.getLong("birthTime");
         lastFoodTime = tag.getLong("lastFoodTime");
         lastWaterTime = tag.getLong("lastWaterTime");
+        hasManure = tag.getBoolean("hasManure");
+        nextManureTime = tag.getLong("nextManureTime");
         sex = AnimalSex.valueOf(tag.getString("sex"));
         pregnant = tag.getBoolean("pregnant");
         gestationTime = tag.getLong("pregnantTime");
