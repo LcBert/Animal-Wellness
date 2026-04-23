@@ -11,12 +11,19 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     public boolean tracked = false;
     public float affinity;
     public long birthTime;
+
     public long lastFoodTime = 0;
     public long lastWaterTime = 0;
+
     public boolean hasManure = false;
     public long nextManureTime = 0;
+
+    public long brushTime = 0;
+
     public AnimalSex sex = AnimalSex.MALE;
+
     public UUID partner = null;
+
     public boolean pregnant = false;
     public long gestationTime = 0;
     public long breedingTime = 0;
@@ -32,6 +39,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         tag.putLong("lastWaterTime", lastWaterTime);
         tag.putBoolean("hasManure", hasManure);
         tag.putLong("nextManureTime", nextManureTime);
+        tag.putLong("brushTime", brushTime);
         tag.putString("sex", sex.name());
         tag.putBoolean("pregnant", pregnant);
         tag.putLong("pregnantTime", gestationTime);
@@ -49,6 +57,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         lastWaterTime = tag.getLong("lastWaterTime");
         hasManure = tag.getBoolean("hasManure");
         nextManureTime = tag.getLong("nextManureTime");
+        brushTime = tag.getLong("brushTime");
         sex = AnimalSex.valueOf(tag.getString("sex"));
         pregnant = tag.getBoolean("pregnant");
         gestationTime = tag.getLong("pregnantTime");

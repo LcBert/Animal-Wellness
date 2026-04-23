@@ -45,7 +45,7 @@ public class AnimalInspector extends Item {
         if (config.info.affinity)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.affinity", new DecimalFormat("#.##").format(helper.getAffinity())).withStyle(ChatFormatting.YELLOW));
         if (config.info.age) {
-            String translatableAge = "message.animal_wellness.animal_inspector.age_";
+            String translatableAge = "message.animal_wellness.animal_inspector.age.";
             if (helper.isBaby()) translatableAge += "baby";
             if (helper.isAdult()) translatableAge += "adult";
             if (helper.isOld()) translatableAge += "old";
@@ -60,6 +60,11 @@ public class AnimalInspector extends Item {
         if (config.info.hydration) {
             String translatableHydration = "message.animal_wellness.animal_inspector.hydration.";
             component.append(newLine).append(Component.translatable(translatableHydration + String.valueOf(helper.isHydrated()))).withStyle(ChatFormatting.YELLOW);
+        }
+
+        if (config.info.brush) {
+            String translatableBrush = "message.animal_wellness.animal_inspector.brush.";
+            component.append(newLine).append(Component.translatable(translatableBrush + String.valueOf(helper.isBrushed()))).withStyle(ChatFormatting.YELLOW);
         }
 
         if (helper.isFemale()) {

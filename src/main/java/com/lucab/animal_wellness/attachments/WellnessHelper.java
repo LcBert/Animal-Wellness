@@ -4,6 +4,7 @@ import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 
 import java.util.Random;
@@ -27,7 +28,9 @@ public class WellnessHelper {
 
     public boolean isConsideredAnimal() {
         String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-        return (WellnessConfig.config.entityList.entities.contains(entityId) == WellnessConfig.config.entityList.whitelist);
+        boolean isAnimalInstance = entity instanceof Animal;
+        boolean isInList = WellnessConfig.config.entityList.entities.contains(entityId) == WellnessConfig.config.entityList.whitelist;
+        return (isAnimalInstance && isInList);
     }
 
     // Tracker
@@ -132,7 +135,7 @@ public class WellnessHelper {
         wellness.hasManure = false;
     }
 
-    public boolean hasManure(){
+    public boolean hasManure() {
         return wellness.hasManure;
     }
 
@@ -142,6 +145,23 @@ public class WellnessHelper {
 
     public boolean canDropManure() {
         return wellness.hasManure && getRemainingManureTime() < 0;
+    }
+
+    // Brush
+    public void setBrush() {
+        wellness.brushTime = level.getGameTime();
+    }
+
+    public long getRemainingBrushTime() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        long elapsed = level.getGameTime() - wellness.brushTime;
+        long remaining = config.brush.brushTime - elapsed;
+        if (remaining <= 0) return 0;
+        return remaining;
+    }
+
+    public boolean isBrushed() {
+        return getRemainingBrushTime() > 0;
     }
 
     // Sex

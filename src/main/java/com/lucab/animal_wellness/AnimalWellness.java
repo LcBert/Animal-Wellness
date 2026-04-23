@@ -9,6 +9,7 @@ import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.block.manures_farmland.ManuredFarmland;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
+import com.lucab.animal_wellness.item.AnimalBrush;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -49,6 +50,9 @@ public class AnimalWellness {
 
     // Animal Food
     public static final DeferredItem<Item> ANIMAL_FOOD = ITEMS.register("animal_food", () -> new Item(new Item.Properties()));
+
+    // Brush
+    public static final DeferredItem<Item> ANIMAL_BRUSH = ITEMS.register("animal_brush", AnimalBrush::new);
 
     // Animal Inspector
     public static final DeferredItem<Item> ANIMAL_INSPECTOR = ITEMS.register("animal_inspector", AnimalInspector::new);
@@ -100,6 +104,7 @@ public class AnimalWellness {
                 .icon(() -> ANIMAL_FOOD.get().getDefaultInstance())
                 .displayItems((parameters, output) -> {
                     output.accept(ANIMAL_FOOD);
+                    output.accept(ANIMAL_BRUSH);
                     output.accept(ANIMAL_INSPECTOR);
                     output.accept(MANURE);
                     output.accept(MANURED_FARMLAND_ITEM);

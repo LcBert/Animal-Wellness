@@ -41,6 +41,10 @@ public class WellnessConfig {
             public int manureTimeMax = 6000;
         }
 
+        public static class Brush {
+            public int brushTime = 5000;
+        }
+
         public static class Breeding {
             public boolean enabled = true;
             public int pregnantTime = 18000;
@@ -70,6 +74,7 @@ public class WellnessConfig {
             public boolean sex = true;
             public boolean food = true;
             public boolean hydration = true;
+            public boolean brush = true;
             public BreedingInfo breedingInfo = new BreedingInfo();
         }
 
@@ -78,6 +83,7 @@ public class WellnessConfig {
         public Age age = new Age();
         public Feed feed = new Feed();
         public Manure manure = new Manure();
+        public Brush brush = new Brush();
         public Breeding breeding = new Breeding();
         public Drop drop = new Drop();
         public Info info = new Info();
