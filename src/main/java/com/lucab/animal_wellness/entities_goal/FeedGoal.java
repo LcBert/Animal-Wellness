@@ -16,7 +16,9 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.stream.StreamSupport;
 
 public class FeedGoal extends Goal {
     private enum RackType {FEED, WATER}
@@ -64,19 +66,17 @@ public class FeedGoal extends Goal {
         BlockPos mobPos = this.mob.blockPosition();
         int range = WellnessConfig.config.feed.searchRange;
 
-        // Efficiently iterate through blocks within the search volume
-        for (BlockPos checkPos : BlockPos.betweenClosed(
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(
                 mobPos.offset(-range, -2, -range),
-                mobPos.offset(range, 2, range))) {
+                mobPos.offset(range, 2, range)
+        );
 
-            if (level.getBlockState(checkPos).getBlock() instanceof FeedRackBlock) {
-                if (level.getBlockEntity(checkPos) instanceof FeedRackBlockEntity rack && rack.getFood() > 0) {
-                    // Return an immutable copy to prevent position shifting during iteration
-                    return checkPos.immutable();
-                }
-            }
-        }
-        return null;
+        return StreamSupport.stream(positions.spliterator(), false)
+                .map(BlockPos::immutable)
+                .filter(checkPos -> level.getBlockState(checkPos).getBlock() instanceof FeedRackBlock)
+                .filter(checkPos -> level.getBlockEntity(checkPos) instanceof FeedRackBlockEntity rack && rack.getFood() > 0)
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(mobPos)))
+                .orElse(null);
     }
 
     private BlockPos findNearestWaterRack() {
@@ -84,19 +84,17 @@ public class FeedGoal extends Goal {
         BlockPos mobPos = this.mob.blockPosition();
         int range = WellnessConfig.config.feed.searchRange;
 
-        // Efficiently iterate through blocks within the search volume
-        for (BlockPos checkPos : BlockPos.betweenClosed(
+        Iterable<BlockPos> positions = BlockPos.betweenClosed(
                 mobPos.offset(-range, -2, -range),
-                mobPos.offset(range, 2, range))) {
+                mobPos.offset(range, 2, range)
+        );
 
-            if (level.getBlockState(checkPos).getBlock() instanceof WaterRackBlock) {
-                if (level.getBlockEntity(checkPos) instanceof WaterRackBlockEntity rack && rack.getWater() > 0) {
-                    // Return an immutable copy to prevent position shifting during iteration
-                    return checkPos.immutable();
-                }
-            }
-        }
-        return null;
+        return StreamSupport.stream(positions.spliterator(), false)
+                .map(BlockPos::immutable)
+                .filter(checkPos -> level.getBlockState(checkPos).getBlock() instanceof WaterRackBlock)
+                .filter(checkPos -> level.getBlockEntity(checkPos) instanceof WaterRackBlockEntity rack && rack.getWater() > 0)
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(mobPos)))
+                .orElse(null);
     }
 
     @Override
