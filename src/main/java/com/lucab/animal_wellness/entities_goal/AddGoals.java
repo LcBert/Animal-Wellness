@@ -6,6 +6,7 @@ import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,15 +19,14 @@ public class AddGoals {
     public static void onEntityJoin(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
         WellnessHelper helper = WellnessHelper.getInstance(entity);
-        if (entity instanceof Animal mob
-                && helper.isConsideredAnimal()
-                && !event.getLevel().isClientSide()) {
+        if (entity instanceof Animal mob && helper.isConsideredAnimal() && !event.getLevel().isClientSide()) {
             mob.goalSelector.addGoal(1, new EscapePlayerGoal(mob));
             mob.goalSelector.addGoal(1, new FeedGoal(mob));
             mob.goalSelector.addGoal(1, new SearchPartnerGoal(mob));
 
             mob.goalSelector.getAvailableGoals().removeIf(goal ->
                     goal.getGoal() instanceof TemptGoal
+                            || goal.getGoal() instanceof FollowParentGoal
             );
         }
     }
