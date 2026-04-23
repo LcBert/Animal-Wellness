@@ -80,6 +80,7 @@ public class WellnessEvent {
                             if (baby != null) {
                                 baby.moveTo(animal.getX(), animal.getY(), animal.getZ());
                                 serverLevel.addFreshEntity(baby);
+                                WellnessHelper.getInstance(baby).setAffinity(helper.getAffinity());
 
                                 serverLevel.sendParticles(ParticleTypes.HEART, baby.getX(), baby.getY(), baby.getZ(), 5, 0.2, 0.2, 0.2, 0.3);
                             }
