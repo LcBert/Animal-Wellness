@@ -38,7 +38,8 @@ public class ManureBlock extends Block {
                 .sound(SoundType.GRASS)
                 .strength(0.2f)
                 .noOcclusion()
-                .noCollission());
+                .noCollission()
+                .requiresCorrectToolForDrops());
 
         this.registerDefaultState(this.stateDefinition.any().setValue(AMOUNT, 1));
     }
