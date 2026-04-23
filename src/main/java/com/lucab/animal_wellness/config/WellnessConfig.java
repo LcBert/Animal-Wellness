@@ -38,8 +38,8 @@ public class WellnessConfig {
 
         public static class Manure {
             public boolean enabled = true;
-            public int manureTimeMin = 6000;
-            public int manureTimeMax = 12000;
+            public int manureTimeMin = 4800;
+            public int manureTimeMax = 6000;
         }
 
         public static class Breeding {

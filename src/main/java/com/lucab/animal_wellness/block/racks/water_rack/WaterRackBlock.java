@@ -117,7 +117,7 @@ public class WaterRackBlock extends BaseEntityBlock {
                     return ItemInteractionResult.SUCCESS;
                 }
             } else {
-                player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
+                player.displayClientMessage(Component.literal(String.format("Water: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
             }
         }
         return ItemInteractionResult.CONSUME;

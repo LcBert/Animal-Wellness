@@ -13,6 +13,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     public long birthTime;
     public long lastFoodTime = 0;
     public long lastWaterTime = 0;
+    public boolean hasManure = false;
     public long nextManureTime = 0;
     public AnimalSex sex = AnimalSex.MALE;
     public UUID partner = null;

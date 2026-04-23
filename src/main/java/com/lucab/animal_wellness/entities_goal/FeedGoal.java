@@ -131,6 +131,7 @@ public class FeedGoal extends Goal {
                 if (level.getBlockEntity(this.targetRackPos) instanceof FeedRackBlockEntity feedRack) {
                     feedRack.removeFood();
                     this.helper.setFood();
+                    if (helper.hasManure()) helper.setManure();
                     this.helper.incrementAffinity();
                     this.stop(); // Task complete
                 } else if (level.getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {

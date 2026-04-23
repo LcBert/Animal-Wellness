@@ -125,6 +125,15 @@ public class WellnessHelper {
     public void setManure() {
         WellnessConfig.Config config = WellnessConfig.config;
         wellness.nextManureTime = new Random().nextLong(level.getGameTime() + config.manure.manureTimeMin, level.getGameTime() + config.manure.manureTimeMax);
+        wellness.hasManure = true;
+    }
+
+    public void removeManure() {
+        wellness.hasManure = false;
+    }
+
+    public boolean hasManure(){
+        return wellness.hasManure;
     }
 
     public long getRemainingManureTime() {
@@ -132,7 +141,7 @@ public class WellnessHelper {
     }
 
     public boolean canDropManure() {
-        return getRemainingManureTime() < 0;
+        return wellness.hasManure && getRemainingManureTime() < 0;
     }
 
     // Sex

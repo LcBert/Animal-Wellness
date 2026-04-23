@@ -33,7 +33,6 @@ public class WellnessEvent {
                 helper.setTracked();
                 helper.setRandomSex();
                 helper.setBirth();
-                helper.setManure();
             }
         }
     }
@@ -62,9 +61,9 @@ public class WellnessEvent {
             }
 
             // Manure
-            if (helper.canDropManure() && config.manure.enabled) {
-                helper.setManure();
+            if (config.manure.enabled && helper.canDropManure()) {
                 ManureBlock.placeManure(level, animal.getOnPos().above());
+                helper.removeManure();
             }
 
             // Breeding
