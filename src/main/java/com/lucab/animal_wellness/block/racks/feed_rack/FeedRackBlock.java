@@ -105,16 +105,8 @@ public class FeedRackBlock extends BaseEntityBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (state.getValue(PART) == RackPart.RIGHT) {
-            Direction leftDir = state.getValue(FACING).getCounterClockWise();
-            BlockPos leftPos = pos.relative(leftDir);
-            BlockState leftState = level.getBlockState(leftPos);
-            if (leftState.is(this) && leftState.getValue(PART) == RackPart.LEFT) {
-                BlockHitResult newHitResult = new BlockHitResult(hitResult.getLocation(), hitResult.getDirection(), leftPos, hitResult.isInside());
-                return this.useItemOn(stack, leftState, level, leftPos, player, hand, newHitResult);
-            }
-        }
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof FeedRackBlockEntity rack) {
+        FeedRackBlockEntity rack = FeedRackBlockEntity.getFeedRack(level, pos, state);
+        if (!level.isClientSide && rack != null) {
             if (stack.getItem() == AnimalWellness.ANIMAL_FOOD.get()) {
                 if (rack.addFood()) {
                     stack.shrink(player.isCreative() ? 0 : 1);

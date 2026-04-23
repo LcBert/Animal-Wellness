@@ -1,13 +1,18 @@
 package com.lucab.animal_wellness.block.racks.water_rack;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.block.racks.RackPart;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
+import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,31 +26,43 @@ public class WaterRackBlockEntity extends BlockEntity {
     public static final int MAX_WATER = 10;
     private int waterAmount = 0;
 
+    public static WaterRackBlockEntity getWaterRack(Level level, BlockPos pos, BlockState state) {
+        if (state.getValue(WaterRackBlock.PART) == RackPart.RIGHT) {
+            Direction leftDir = state.getValue(WaterRackBlock.FACING).getCounterClockWise();
+            BlockPos leftPos = pos.relative(leftDir);
+            BlockState leftState = level.getBlockState(leftPos);
+            if (level.getBlockEntity(leftPos) instanceof WaterRackBlockEntity rack && leftState.getValue(WaterRackBlock.PART) == RackPart.LEFT) {
+                return rack;
+            }
+        } else {
+            if (level.getBlockEntity(pos) instanceof WaterRackBlockEntity rack) {
+                return rack;
+            }
+        }
+        return null;
+    }
+
     public int getWater() {
-        return waterAmount;
+        WaterRackBlockEntity rack = getWaterRack(level, worldPosition, getBlockState());
+        if (rack == null) return 0;
+        return rack.waterAmount;
     }
 
     public boolean setWater(int amount) {
-        if (amount < 0 || amount > MAX_WATER) return false;
-        this.waterAmount = amount;
-        setChanged();
+        WaterRackBlockEntity rack = getWaterRack(level, worldPosition, getBlockState());
+        if (amount < 0 || amount > MAX_WATER || rack == null) return false;
+        rack.waterAmount = amount;
+        rack.setChanged();
+        this.setChanged();
         return true;
     }
 
-    public boolean addWater(int amount) {
-        return setWater(this.waterAmount + amount);
-    }
-
     public boolean addWater() {
-        return addWater(1);
-    }
-
-    public boolean removeWater(int amount) {
-        return setWater(this.waterAmount - amount);
+        return setWater(this.waterAmount + 1);
     }
 
     public boolean removeWater() {
-        return removeWater(1);
+        return setWater(this.waterAmount - 1);
     }
 
     public boolean hasWater() {
