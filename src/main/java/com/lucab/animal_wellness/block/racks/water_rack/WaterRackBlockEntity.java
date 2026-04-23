@@ -58,11 +58,11 @@ public class WaterRackBlockEntity extends BlockEntity {
     }
 
     public boolean addWater() {
-        return setWater(this.waterAmount + 1);
+        return setWater(this.getWater() + 1);
     }
 
     public boolean removeWater() {
-        return setWater(this.waterAmount - 1);
+        return setWater(this.getWater() - 1);
     }
 
     public boolean hasWater() {
