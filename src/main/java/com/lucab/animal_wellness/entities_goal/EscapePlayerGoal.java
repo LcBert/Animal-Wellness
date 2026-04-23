@@ -27,8 +27,7 @@ public class EscapePlayerGoal extends Goal {
         Player targetPlayer = this.mob.level().getNearestPlayer(this.mob, DISTANCE_THRESHOLD);
         if (targetPlayer == null || targetPlayer.isCreative()) return false;
 
-        float affinity = WellnessHelper.getInstance(this.mob).getAffinity();
-        if (affinity >= WellnessConfig.config.affinity.escapePlayerThreshold) return false;
+        if (!WellnessHelper.getInstance(this.mob).isBaby()) return false;
 
         if (!this.mob.hasLineOfSight(targetPlayer)) return false;
 

@@ -20,7 +20,6 @@ public class WellnessConfig {
 
         public static class Affinity {
             public float affinityRate = 0.1f;
-            public float escapePlayerThreshold = 0.3f;
         }
 
         public static class Age {
