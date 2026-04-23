@@ -6,6 +6,7 @@ import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlock;
 import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlockEntity;
+import com.lucab.animal_wellness.block.manures_farmland.ManuredFarmland;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.mojang.logging.LogUtils;
@@ -77,6 +78,10 @@ public class AnimalWellness {
                     STONE_WATER_RACK.get()
             ).build(null));
 
+    // Manured Farmland
+    public static final DeferredBlock<Block> MANURED_FARMLAND = BLOCKS.register("manured_farmland", ManuredFarmland::new);
+    public static final DeferredItem<BlockItem> MANURED_FARMLAND_ITEM = ITEMS.register("manured_farmland", () -> new BlockItem(MANURED_FARMLAND.get(), new Item.Properties()));
+
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {
         NeoForge.EVENT_BUS.register(this);
         BLOCKS.register(modEventBus);
@@ -97,6 +102,7 @@ public class AnimalWellness {
                     output.accept(ANIMAL_FOOD);
                     output.accept(ANIMAL_INSPECTOR);
                     output.accept(MANURE);
+                    output.accept(MANURED_FARMLAND_ITEM);
                     output.accept(OAK_FEED_RACK_ITEM);
                     output.accept(SPRUCE_FEED_RACK_ITEM);
                     output.accept(STONE_WATER_RACK_ITEM);

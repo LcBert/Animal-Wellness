@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:dirt"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "animal_wellness:manure"
+    }
+  ],
+  "result": {
+    "id": "animal_wellness:manured_farmland",
+    "count": 1
+  }
+}
