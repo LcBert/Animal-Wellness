@@ -56,7 +56,7 @@ public class WellnessEvent {
             if (helper.isDead()) entity.kill();
 
             // Affinity
-            if (level.getGameTime() % 5000 == 0) if (!helper.isFed() && !helper.isHydrated()) {
+            if (level.getGameTime() % config.affinity.dropRate == 0) if (!helper.isFed() && !helper.isHydrated()) {
                 helper.decrementAffinity();
             }
 

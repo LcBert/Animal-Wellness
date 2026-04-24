@@ -20,6 +20,7 @@ public class WellnessConfig {
 
         public static class Affinity {
             public float affinityRate = 0.1f;
+            public int dropRate = 6000;
         }
 
         public static class Age {

@@ -137,6 +137,7 @@ public class FeedGoal extends Goal {
                 } else if (level.getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {
                     waterRack.removeWater();
                     this.helper.setWater();
+                    this.stop(); // Task complete
                 }
             }
         }

@@ -54,7 +54,16 @@ public class WellnessHelper {
 
     public void decrementAffinity() {
         WellnessConfig.Config config = WellnessConfig.config;
-        setAffinity(wellness.affinity - config.affinity.affinityRate);
+        float score = 1.0f - getAffinityScore();
+        setAffinity(wellness.affinity - config.affinity.affinityRate * score);
+    }
+
+    private float getAffinityScore() {
+        float score = 0.0f;
+        if (isFed()) score += 0.34f;
+        if (isHydrated()) score += 0.33f;
+        if (isBrushed()) score += 0.33f;
+        return score;
     }
 
     public float getAffinity() {
