@@ -1,6 +1,7 @@
 {
   "itemGroup.animal_wellness": "Animal Wellness",
   "item.animal_wellness.animal_food": "Animal food",
+  "item.animal_wellness.animal_brush": "Animal Brush",
   "item.animal_wellness.animal_inspector": "Animal Inspector",
   "block.animal_wellness.manure": "Manure",
   "block.animal_wellness.manured_farmland": "Manured Farmland",
