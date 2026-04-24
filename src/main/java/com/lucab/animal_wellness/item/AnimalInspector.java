@@ -1,7 +1,5 @@
 package com.lucab.animal_wellness.item;
 
-import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,8 +24,7 @@ public class AnimalInspector extends Item {
         if (interactionTarget instanceof Animal animal) {
             WellnessHelper helper = WellnessHelper.getInstance(animal);
             if (helper.isTracked()) {
-                WellnessAttachment attachment = animal.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-                PacketDistributor.sendToPlayer((ServerPlayer) player, new OpenAnimalScreenPacket(animal.getId(), attachment.serializeNBT(animal.level().registryAccess())));
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new OpenAnimalScreenPacket(animal.getId()));
                 return InteractionResult.SUCCESS;
             }
         }

@@ -10,6 +10,8 @@ import com.lucab.animal_wellness.block.manures_farmland.ManuredFarmland;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.lucab.animal_wellness.item.AnimalBrush;
+import com.lucab.animal_wellness.network.AnimalDataSyncPacket;
+import com.lucab.animal_wellness.network.AnimalDataSyncRequestPacket;
 import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.ParticleType;
@@ -106,6 +108,8 @@ public class AnimalWellness {
     public void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToClient(OpenAnimalScreenPacket.TYPE, OpenAnimalScreenPacket.STREAM_CODEC, OpenAnimalScreenPacket::handle);
+        registrar.playToClient(AnimalDataSyncPacket.TYPE, AnimalDataSyncPacket.STREAM_CODEC, AnimalDataSyncPacket::handle);
+        registrar.playToServer(AnimalDataSyncRequestPacket.TYPE, AnimalDataSyncRequestPacket.STREAM_CODEC, AnimalDataSyncRequestPacket::handle);
     }
 
     public void addCreativeTab() {

@@ -1,12 +1,14 @@
 package com.lucab.animal_wellness.screen;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.network.AnimalDataSyncRequestPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 public class AnimalScreen extends Screen {
     private static final ResourceLocation BACKGROUND =
             ResourceLocation.fromNamespaceAndPath(AnimalWellness.MODID, "textures/gui/animal_screen.png");
+
+    private int tickCounter = 0;
 
     private final Entity animal;
     private int currentTab = 0;
@@ -52,6 +56,15 @@ public class AnimalScreen extends Screen {
 
     private void setTab(int tab) {
         currentTab = tab;
+    }
+
+    @Override
+    public void tick() {
+        tickCounter++;
+        if (tickCounter % 20 == 0) {
+            PacketDistributor.sendToServer(new AnimalDataSyncRequestPacket(animal.getId()));
+            tickCounter = 0;
+        }
     }
 
     @Override
