@@ -1,5 +1,6 @@
 package com.lucab.animal_wellness.item;
 
+import com.lucab.animal_wellness.attachments.GeneticTraits;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.ChatFormatting;
@@ -75,6 +76,16 @@ public class AnimalInspector extends Item {
         }
         if (config.info.breedingInfo.breedingCooldown)
             component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.breeding_cooldown", helper.getRemainingBreeding()).withStyle(ChatFormatting.YELLOW));
+
+        if (config.info.genetics && config.genetics.enabled) {
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.title").withStyle(ChatFormatting.GOLD));
+            GeneticTraits traits = helper.getGeneticTraits();
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.productivity", new DecimalFormat("#.##").format(traits.productivity)).withStyle(ChatFormatting.AQUA));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.resistance", new DecimalFormat("#.##").format(traits.resistance)).withStyle(ChatFormatting.AQUA));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.efficiency", new DecimalFormat("#.##").format(traits.efficiency)).withStyle(ChatFormatting.AQUA));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.temperament", new DecimalFormat("#.##").format(traits.temperament)).withStyle(ChatFormatting.AQUA));
+            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.overall", new DecimalFormat("#.##").format(traits.getOverallScore())).withStyle(ChatFormatting.GREEN));
+        }
 
         player.displayClientMessage(component, false);
     }

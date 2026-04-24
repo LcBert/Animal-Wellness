@@ -109,6 +109,7 @@ public class FeedGoal extends Goal {
             Direction facing = level.getBlockState(this.targetRackPos).getValue(FeedRackBlock.FACING);
             // Target the block in front of the rack based on its facing direction
             BlockPos frontPos = this.targetRackPos.relative(facing.getOpposite());
+
             this.mob.getNavigation().moveTo(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5, 0, SPEED_MODIFIER);
         }
 

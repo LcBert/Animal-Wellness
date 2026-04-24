@@ -49,13 +49,23 @@ public class WellnessHelper {
 
     public void incrementAffinity() {
         WellnessConfig.Config config = WellnessConfig.config;
-        setAffinity(wellness.affinity + config.affinity.affinityRate);
+        float affinityRate = config.affinity.affinityRate;
+        // Apply temperament modifier if genetics is enabled
+        if (config.genetics.enabled) {
+            affinityRate += affinityRate * getTemperamentModifier();
+        }
+        setAffinity(wellness.affinity + affinityRate);
     }
 
     public void decrementAffinity() {
         WellnessConfig.Config config = WellnessConfig.config;
-        float score = 1.0f - getAffinityScore();
-        setAffinity(wellness.affinity - config.affinity.affinityRate * score);
+        float affinityRate = config.affinity.affinityRate;
+        affinityRate *= 1 - getAffinityScore();
+        // Apply resistance modifier if genetics is enabled
+        if (config.genetics.enabled) {
+            affinityRate *= 1 - getResistanceModifier();
+        }
+        setAffinity(wellness.affinity - affinityRate);
     }
 
     private float getAffinityScore() {
@@ -107,7 +117,12 @@ public class WellnessHelper {
     public long getRemainingFood() {
         WellnessConfig.Config config = WellnessConfig.config;
         long elapsed = level.getGameTime() - wellness.lastFoodTime;
-        long remaining = config.feed.maxFeed - elapsed;
+        long maxFeed = config.feed.maxFeed;
+        // Apply efficiency modifier if genetics is enabled
+        if (config.genetics.enabled) {
+            maxFeed += (long) (maxFeed * getEfficiencyModifier());
+        }
+        long remaining = maxFeed - elapsed;
         if (remaining <= 0) return 0;
         return remaining;
     }
@@ -124,7 +139,12 @@ public class WellnessHelper {
     public long getRemainingWater() {
         WellnessConfig.Config config = WellnessConfig.config;
         long elapsed = level.getGameTime() - wellness.lastWaterTime;
-        long remaining = config.feed.maxWater - elapsed;
+        long maxWater = config.feed.maxWater;
+        // Apply efficiency modifier if genetics is enabled
+        if (config.genetics.enabled) {
+            maxWater += (long) (maxWater * getEfficiencyModifier());
+        }
+        long remaining = maxWater - elapsed;
         if (remaining <= 0) return 0;
         return remaining;
     }
@@ -195,6 +215,11 @@ public class WellnessHelper {
         wellness.partner = partner;
     }
 
+    public void setPartner(UUID partner, GeneticTraits partnerGenetic) {
+        wellness.partner = partner;
+        wellness.partnerGenetics = partnerGenetic;
+    }
+
     public void removePartner() {
         wellness.partner = null;
     }
@@ -247,5 +272,43 @@ public class WellnessHelper {
     public boolean canBreeding() {
         WellnessConfig.Config config = WellnessConfig.config;
         return !this.isBreeding() && !this.isPregnant() && this.isAdult() && this.getPartner() == null && this.getAffinity() >= config.breeding.affinityThreshold;
+    }
+
+    // Genetics
+    public void setGeneticTraits(GeneticTraits traits) {
+        wellness.geneticTraits = traits;
+    }
+
+    public GeneticTraits getGeneticTraits() {
+        return wellness.geneticTraits;
+    }
+
+    public GeneticTraits getPartnerGenetics() {
+        return wellness.partnerGenetics;
+    }
+
+    public void inheritGenetics(GeneticTraits parent1, GeneticTraits parent2) {
+        GeneticTraits inherited = GeneticTraits.inherit(parent1, parent2);
+        setGeneticTraits(inherited);
+    }
+
+    public float getProductivityModifier() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        return getGeneticTraits().productivity;
+    }
+
+    public float getResistanceModifier() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        return getGeneticTraits().resistance;
+    }
+
+    public float getEfficiencyModifier() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        return getGeneticTraits().efficiency;
+    }
+
+    public float getTemperamentModifier() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        return getGeneticTraits().temperament;
     }
 }

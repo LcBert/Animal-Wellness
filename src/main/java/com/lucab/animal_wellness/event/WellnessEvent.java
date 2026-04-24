@@ -1,6 +1,7 @@
 package com.lucab.animal_wellness.event;
 
 import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.attachments.GeneticTraits;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.block.manure.ManureBlock;
 import com.lucab.animal_wellness.config.WellnessConfig;
@@ -56,7 +57,7 @@ public class WellnessEvent {
             if (helper.isDead()) entity.kill();
 
             // Affinity
-            if (level.getGameTime() % config.affinity.dropRate == 0) if (!helper.isFed() && !helper.isHydrated()) {
+            if (level.getGameTime() % config.affinity.dropTime == 0) {
                 helper.decrementAffinity();
             }
 
@@ -79,7 +80,16 @@ public class WellnessEvent {
                             if (baby != null) {
                                 baby.moveTo(animal.getX(), animal.getY(), animal.getZ());
                                 serverLevel.addFreshEntity(baby);
-                                WellnessHelper.getInstance(baby).setAffinity(helper.getAffinity());
+                                WellnessHelper babyHelper = WellnessHelper.getInstance(baby);
+                                babyHelper.setAffinity(helper.getAffinity());
+
+                                // Genetic inheritance
+                                if (config.genetics.enabled) {
+                                    GeneticTraits partnerTraits = helper.getPartnerGenetics();
+                                    if (partnerTraits != null) {
+                                        babyHelper.inheritGenetics(helper.getGeneticTraits(), partnerTraits);
+                                    }
+                                }
 
                                 serverLevel.sendParticles(ParticleTypes.HEART, baby.getX(), baby.getY(), baby.getZ(), 5, 0.2, 0.2, 0.2, 0.3);
                             }
@@ -97,7 +107,7 @@ public class WellnessEvent {
                             WellnessHelper partnerHelper = WellnessHelper.getInstance(nearest);
                             if (partnerHelper.canBreeding() && partnerHelper.isFemale()) {
                                 helper.setPartner(nearest.getUUID());
-                                partnerHelper.setPartner(animal.getUUID());
+                                partnerHelper.setPartner(animal.getUUID(), helper.getGeneticTraits());
                             }
                         }
                     }
@@ -113,8 +123,9 @@ public class WellnessEvent {
         WellnessHelper helper = WellnessHelper.getInstance(entity);
         if (entity instanceof Animal && helper.isConsideredAnimal() && !helper.isBaby() && config.drop.affinityDrop) {
             if (helper.getAffinity() >= config.drop.affinityThreshold) {
+                float productivityMod = config.genetics.enabled ? helper.getProductivityModifier() : 1.0f;
                 event.getDrops().forEach(item -> {
-                    item.getItem().setCount((int) (item.getItem().getCount() + config.drop.maxDrop * helper.getAffinity()));
+                    item.getItem().setCount((int) (item.getItem().getCount() + config.drop.maxDrop * helper.getAffinity() * productivityMod));
                 });
             } else {
                 event.setCanceled(true);

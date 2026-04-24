@@ -22,5 +22,12 @@
   "message.animal_wellness.animal_inspector.brush.false": "Brush: §4Needs Brushing§r",
   "message.animal_wellness.animal_inspector.breeding.pregnant": "Pregnant: %s",
   "message.animal_wellness.animal_inspector.breeding.gestation_cooldown": "Gestation Cooldown: %d",
-  "message.animal_wellness.animal_inspector.breeding.breeding_cooldown": "Breeding Cooldown: %d"
+  "message.animal_wellness.animal_inspector.breeding.breeding_cooldown": "Breeding Cooldown: %d",
+  "message.animal_wellness.animal_inspector.genetics.title": "Genetic Traits:",
+  "message.animal_wellness.animal_inspector.genetics.productivity": "  Productivity: %s",
+  "message.animal_wellness.animal_inspector.genetics.resistance": "  Resistance: %s",
+  "message.animal_wellness.animal_inspector.genetics.speed": "  Speed: %s",
+  "message.animal_wellness.animal_inspector.genetics.efficiency": "  Efficiency: %s",
+  "message.animal_wellness.animal_inspector.genetics.temperament": "  Temperament: %s",
+  "message.animal_wellness.animal_inspector.genetics.overall": "  Overall Score: %s"
 }

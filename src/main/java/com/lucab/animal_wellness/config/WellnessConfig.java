@@ -20,7 +20,7 @@ public class WellnessConfig {
 
         public static class Affinity {
             public float affinityRate = 0.1f;
-            public int dropRate = 6000;
+            public int dropTime = 6000;
         }
 
         public static class Age {
@@ -61,6 +61,11 @@ public class WellnessConfig {
             public int maxDrop = 10;
         }
 
+        public static class Genetics {
+            public boolean enabled = true;
+            public float mutationAmount = 0.2f;
+        }
+
         public static class Info {
             public static class BreedingInfo {
                 public boolean pregnancy = true;
@@ -77,6 +82,7 @@ public class WellnessConfig {
             public boolean hydration = true;
             public boolean brush = true;
             public BreedingInfo breedingInfo = new BreedingInfo();
+            public boolean genetics = true;
         }
 
         public EntityList entityList = new EntityList();
@@ -87,6 +93,7 @@ public class WellnessConfig {
         public Brush brush = new Brush();
         public Breeding breeding = new Breeding();
         public Drop drop = new Drop();
+        public Genetics genetics = new Genetics();
         public Info info = new Info();
     }
 
