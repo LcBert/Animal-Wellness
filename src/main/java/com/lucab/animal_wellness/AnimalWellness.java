@@ -10,6 +10,7 @@ import com.lucab.animal_wellness.block.manures_farmland.ManuredFarmland;
 import com.lucab.animal_wellness.config.WellnessConfig;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.lucab.animal_wellness.item.AnimalBrush;
+import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -26,6 +27,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.*;
 import org.slf4j.Logger;
 
@@ -95,7 +98,14 @@ public class AnimalWellness {
         ATTACHMENT_TYPE.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
 
+        modEventBus.addListener(this::registerPayloads);
+
         addCreativeTab();
+    }
+
+    public void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(OpenAnimalScreenPacket.TYPE, OpenAnimalScreenPacket.STREAM_CODEC, OpenAnimalScreenPacket::handle);
     }
 
     public void addCreativeTab() {

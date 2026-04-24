@@ -66,25 +66,6 @@ public class WellnessConfig {
             public float mutationAmount = 0.2f;
         }
 
-        public static class Info {
-            public static class BreedingInfo {
-                public boolean pregnancy = true;
-                public boolean gestationCooldown = true;
-                public boolean breedingCooldown = true;
-            }
-
-            public boolean enabled = true;
-            public boolean type = true;
-            public boolean affinity = true;
-            public boolean age = true;
-            public boolean sex = true;
-            public boolean food = true;
-            public boolean hydration = true;
-            public boolean brush = true;
-            public BreedingInfo breedingInfo = new BreedingInfo();
-            public boolean genetics = true;
-        }
-
         public EntityList entityList = new EntityList();
         public Affinity affinity = new Affinity();
         public Age age = new Age();
@@ -94,7 +75,6 @@ public class WellnessConfig {
         public Breeding breeding = new Breeding();
         public Drop drop = new Drop();
         public Genetics genetics = new Genetics();
-        public Info info = new Info();
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

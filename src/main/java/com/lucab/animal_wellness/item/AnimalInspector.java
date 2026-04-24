@@ -1,11 +1,10 @@
 package com.lucab.animal_wellness.item;
 
-import com.lucab.animal_wellness.attachments.GeneticTraits;
+import com.lucab.animal_wellness.AnimalWellness;
+import com.lucab.animal_wellness.attachments.WellnessAttachment;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
-import com.lucab.animal_wellness.config.WellnessConfig;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,8 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-
-import java.text.DecimalFormat;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class AnimalInspector extends Item {
     public AnimalInspector() {
@@ -28,65 +26,11 @@ public class AnimalInspector extends Item {
         if (interactionTarget instanceof Animal animal) {
             WellnessHelper helper = WellnessHelper.getInstance(animal);
             if (helper.isTracked()) {
-                showAnimalInfo(player, animal);
+                WellnessAttachment attachment = animal.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new OpenAnimalScreenPacket(animal.getId(), attachment.serializeNBT(animal.level().registryAccess())));
                 return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
-    }
-
-    private void showAnimalInfo(Player player, Animal animal) {
-        WellnessConfig.Config config = WellnessConfig.config;
-        if (!config.info.enabled) return;
-        WellnessHelper helper = WellnessHelper.getInstance(animal);
-        MutableComponent newLine = Component.literal("\n - ").withStyle(ChatFormatting.YELLOW);
-        MutableComponent component = Component.translatable("message.animal_wellness.animal_inspector.info");
-        if (config.info.type)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.type", animal.getType().getDescription().getString()).withStyle(ChatFormatting.YELLOW));
-        if (config.info.affinity)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.affinity", new DecimalFormat("#.##").format(helper.getAffinity())).withStyle(ChatFormatting.YELLOW));
-        if (config.info.age) {
-            String translatableAge = "message.animal_wellness.animal_inspector.age.";
-            if (helper.isBaby()) translatableAge += "baby";
-            if (helper.isAdult()) translatableAge += "adult";
-            if (helper.isOld()) translatableAge += "old";
-            component.append(newLine).append(Component.translatable(translatableAge).withStyle(ChatFormatting.YELLOW));
-        }
-        if (config.info.sex)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.sex", helper.getSex().toString()).withStyle(ChatFormatting.YELLOW));
-        if (config.info.food) {
-            String translatableFood = "message.animal_wellness.animal_inspector.food.";
-            component.append(newLine).append(Component.translatable(translatableFood + String.valueOf(helper.isFed()))).withStyle(ChatFormatting.YELLOW);
-        }
-        if (config.info.hydration) {
-            String translatableHydration = "message.animal_wellness.animal_inspector.hydration.";
-            component.append(newLine).append(Component.translatable(translatableHydration + String.valueOf(helper.isHydrated()))).withStyle(ChatFormatting.YELLOW);
-        }
-
-        if (config.info.brush) {
-            String translatableBrush = "message.animal_wellness.animal_inspector.brush.";
-            component.append(newLine).append(Component.translatable(translatableBrush + String.valueOf(helper.isBrushed()))).withStyle(ChatFormatting.YELLOW);
-        }
-
-        if (helper.isFemale()) {
-            if (config.info.breedingInfo.pregnancy)
-                component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.pregnant", String.valueOf(helper.isPregnant())).withStyle(ChatFormatting.YELLOW));
-            if (config.info.breedingInfo.gestationCooldown)
-                component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.gestation_cooldown", helper.getRemainingGestation()).withStyle(ChatFormatting.YELLOW));
-        }
-        if (config.info.breedingInfo.breedingCooldown)
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.breeding.breeding_cooldown", helper.getRemainingBreeding()).withStyle(ChatFormatting.YELLOW));
-
-        if (config.info.genetics && config.genetics.enabled) {
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.title").withStyle(ChatFormatting.GOLD));
-            GeneticTraits traits = helper.getGeneticTraits();
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.productivity", new DecimalFormat("#.##").format(traits.productivity)).withStyle(ChatFormatting.AQUA));
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.resistance", new DecimalFormat("#.##").format(traits.resistance)).withStyle(ChatFormatting.AQUA));
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.efficiency", new DecimalFormat("#.##").format(traits.efficiency)).withStyle(ChatFormatting.AQUA));
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.temperament", new DecimalFormat("#.##").format(traits.temperament)).withStyle(ChatFormatting.AQUA));
-            component.append(newLine).append(Component.translatable("message.animal_wellness.animal_inspector.genetics.overall", new DecimalFormat("#.##").format(traits.getOverallScore())).withStyle(ChatFormatting.GREEN));
-        }
-
-        player.displayClientMessage(component, false);
     }
 }
