@@ -17,6 +17,7 @@ public class AnimalScreen extends Screen {
     private static final ResourceLocation BACKGROUND =
             ResourceLocation.fromNamespaceAndPath(AnimalWellness.MODID, "textures/gui/animal_screen.png");
 
+    private static final int SYNC_INTERVAL = 20;
     private int tickCounter = 0;
 
     private final Entity animal;
@@ -60,11 +61,11 @@ public class AnimalScreen extends Screen {
 
     @Override
     public void tick() {
-        tickCounter++;
-        if (tickCounter % 20 == 0) {
+        if (tickCounter == 0) {
             PacketDistributor.sendToServer(new AnimalDataSyncRequestPacket(animal.getId()));
-            tickCounter = 0;
+            tickCounter = SYNC_INTERVAL;
         }
+        tickCounter--;
     }
 
     @Override
