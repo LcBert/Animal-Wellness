@@ -1,7 +1,5 @@
 package com.lucab.animal_wellness.item;
 
-
-import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
