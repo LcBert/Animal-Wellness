@@ -30,8 +30,8 @@ public class WellnessConfig {
         }
 
         public static class Feed {
-            public int maxFeed = 6000;
-            public int maxWater = 6000;
+            public int maxFeed = 12000;
+            public int maxWater = 12000;
             public int searchRange = 10;
             public int eatTime = 100;
         }
