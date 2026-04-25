@@ -51,7 +51,7 @@ public class WellnessEvent {
             if (helper.isBaby() && !animal.isBaby()) {
                 animal.setBaby(true);
                 animal.setAge(-10);
-            } else if (!helper.isBaby() && !animal.isBaby()) {
+            } else if (!helper.isBaby() && animal.isBaby()) {
                 animal.setBaby(false);
             }
             if (helper.isDead()) entity.kill();
