@@ -44,10 +44,10 @@ public class GeneticTraits implements INBTSerializable<CompoundTag> {
         float resistance = (parent1.resistance + parent2.resistance) / 2.0f;
 
         // Applica mutazioni
-        productivity += (random.nextFloat() - 0.5f) * config.genetics.mutationAmount;
-        efficiency += (random.nextFloat() - 0.5f) * config.genetics.mutationAmount;
-        temperament += (random.nextFloat() - 0.5f) * config.genetics.mutationAmount;
-        resistance += (random.nextFloat() - 0.5f) * config.genetics.mutationAmount;
+        productivity += (random.nextFloat( config.genetics.mutationAmount));
+        efficiency += (random.nextFloat( config.genetics.mutationAmount));
+        temperament += (random.nextFloat( config.genetics.mutationAmount));
+        resistance += (random.nextFloat( config.genetics.mutationAmount));
 
         return new GeneticTraits(productivity, resistance, efficiency, temperament);
     }

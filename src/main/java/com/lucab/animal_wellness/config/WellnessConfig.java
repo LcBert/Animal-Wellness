@@ -63,7 +63,7 @@ public class WellnessConfig {
 
         public static class Genetics {
             public boolean enabled = true;
-            public float mutationAmount = 0.2f;
+            public float mutationAmount = 0.005f;
         }
 
         public EntityList entityList = new EntityList();
