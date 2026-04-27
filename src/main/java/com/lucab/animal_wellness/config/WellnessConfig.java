@@ -43,7 +43,7 @@ public class WellnessConfig {
         }
 
         public static class Brush {
-            public int brushTime = 5000;
+            public int brushTime = 24000;
         }
 
         public static class Breeding {
