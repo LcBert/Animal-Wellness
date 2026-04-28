@@ -113,6 +113,10 @@ public class WellnessEvent {
                         }
                     }
                 }
+
+                // Egg
+                if (!helper.isBaby() && helper.getEggTime() == 0)
+                    helper.setEggTime();
             }
         }
     }

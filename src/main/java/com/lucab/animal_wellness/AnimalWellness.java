@@ -1,6 +1,8 @@
 package com.lucab.animal_wellness;
 
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
+import com.lucab.animal_wellness.block.nest.NestBlock;
+import com.lucab.animal_wellness.block.nest.NestBlockEntity;
 import com.lucab.animal_wellness.block.manure.ManureBlock;
 import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
 import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
@@ -68,6 +70,16 @@ public class AnimalWellness {
     public static final DeferredBlock<Block> MANURE_BLOCK = BLOCKS.register("manure", ManureBlock::new);
     public static final DeferredItem<BlockItem> MANURE = ITEMS.register("manure", () -> new BlockItem(MANURE_BLOCK.get(), new Item.Properties()));
 
+    // Manured Farmland
+    public static final DeferredBlock<Block> MANURED_FARMLAND = BLOCKS.register("manured_farmland", ManuredFarmland::new);
+    public static final DeferredItem<BlockItem> MANURED_FARMLAND_ITEM = ITEMS.register("manured_farmland", () -> new BlockItem(MANURED_FARMLAND.get(), new Item.Properties()));
+
+    // Nest
+    public static final DeferredBlock<Block> NEST_BLOCK = BLOCKS.register("nest", () -> new NestBlock());
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NestBlockEntity>> NEST_BLOCK_ENTITY = BLOCK_ENTITIES
+            .register("nest", () -> BlockEntityType.Builder.of(NestBlockEntity::new, NEST_BLOCK.get()).build(null));
+    public static final DeferredItem<BlockItem> NEST_ITEM = ITEMS.register("nest", () -> new BlockItem(NEST_BLOCK.get(), new Item.Properties()));
+
     // Feed rack
     public static final DeferredBlock<Block> OAK_FEED_RACK = BLOCKS.register("oak_feed_rack", () -> new FeedRackBlock());
     public static final DeferredItem<BlockItem> OAK_FEED_RACK_ITEM = ITEMS.register("oak_feed_rack", () -> new BlockItem(OAK_FEED_RACK.get(), new Item.Properties()));
@@ -88,10 +100,6 @@ public class AnimalWellness {
             .register("water_rack", () -> BlockEntityType.Builder.of(WaterRackBlockEntity::new,
                     STONE_WATER_RACK.get()
             ).build(null));
-
-    // Manured Farmland
-    public static final DeferredBlock<Block> MANURED_FARMLAND = BLOCKS.register("manured_farmland", ManuredFarmland::new);
-    public static final DeferredItem<BlockItem> MANURED_FARMLAND_ITEM = ITEMS.register("manured_farmland", () -> new BlockItem(MANURED_FARMLAND.get(), new Item.Properties()));
 
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {
         NeoForge.EVENT_BUS.register(this);
@@ -145,6 +153,7 @@ public class AnimalWellness {
                     output.accept(ANIMAL_INSPECTOR);
                     output.accept(MANURE);
                     output.accept(MANURED_FARMLAND_ITEM);
+                    output.accept(NEST_ITEM);
                     output.accept(OAK_FEED_RACK_ITEM);
                     output.accept(SPRUCE_FEED_RACK_ITEM);
                     output.accept(STONE_WATER_RACK_ITEM);

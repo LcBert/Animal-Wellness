@@ -66,6 +66,12 @@ public class WellnessConfig {
             public float mutationAmount = 0.005f;
         }
 
+        public static class Egg {
+            public int eggTime = 18000;
+            public int searchRange = 10;
+            public int layTime = 200;
+        }
+
         public EntityList entityList = new EntityList();
         public Affinity affinity = new Affinity();
         public Age age = new Age();
@@ -75,6 +81,7 @@ public class WellnessConfig {
         public Breeding breeding = new Breeding();
         public Drop drop = new Drop();
         public Genetics genetics = new Genetics();
+        public Egg egg = new Egg();
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

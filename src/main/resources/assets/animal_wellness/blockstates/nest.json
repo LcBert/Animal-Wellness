@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "animal_wellness:block/nest"
+    }
+  }
+}

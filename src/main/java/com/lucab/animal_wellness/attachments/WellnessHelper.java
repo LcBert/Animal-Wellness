@@ -340,4 +340,27 @@ public class WellnessHelper {
     public boolean isTamed() {
         return wellness.tamed;
     }
+
+    // Egg (Only for chicken)
+    public void setEggTime() {
+        wellness.eggTime = level.getGameTime();
+    }
+
+    public long getEggTime() {
+        return wellness.eggTime;
+
+    }
+
+    public long getRemainingEggTime() {
+        if (wellness.eggTime == 0) return 0;
+        WellnessConfig.Config config = WellnessConfig.config;
+        long elapsed = level.getGameTime() - wellness.eggTime;
+        long remaining = config.egg.eggTime - elapsed;
+        if (remaining <= 0) return 0;
+        return remaining;
+    }
+
+    public boolean isEggReady() {
+        return (!isBaby() && getRemainingEggTime() == 0);
+    }
 }
