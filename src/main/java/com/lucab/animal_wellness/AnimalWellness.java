@@ -7,14 +7,13 @@ import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
 import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlock;
 import com.lucab.animal_wellness.block.racks.water_rack.WaterRackBlockEntity;
 import com.lucab.animal_wellness.block.manures_farmland.ManuredFarmland;
-import com.lucab.animal_wellness.config.WellnessConfig;
+import com.lucab.animal_wellness.command.WellnessCommand;
 import com.lucab.animal_wellness.item.AnimalInspector;
 import com.lucab.animal_wellness.item.AnimalBrush;
 import com.lucab.animal_wellness.network.AnimalDataSyncPacket;
 import com.lucab.animal_wellness.network.AnimalDataSyncRequestPacket;
 import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
 import com.mojang.logging.LogUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,7 +30,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.*;
@@ -153,7 +152,7 @@ public class AnimalWellness {
     }
 
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        WellnessConfig.load();
+    public void registerCommands(RegisterCommandsEvent event) {
+        WellnessCommand.register(event.getDispatcher());
     }
 }
