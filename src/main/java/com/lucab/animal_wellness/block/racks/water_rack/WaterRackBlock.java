@@ -110,15 +110,21 @@ public class WaterRackBlock extends BaseEntityBlock {
             if (stack.getItem() == Items.WATER_BUCKET) {
                 if (rack.addWater()) {
                     if (!player.isCreative()) {
-                        stack.shrink(1);
-                        player.getInventory().add(new ItemStack(Items.BUCKET));
+                        player.setItemInHand(hand, new ItemStack(Items.BUCKET));
                     }
                     level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
-            } else {
-                player.displayClientMessage(Component.literal(String.format("Water: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
+            } else if (stack.getItem() == Items.BUCKET) {
+                if (rack.removeWater()) {
+                    if (!player.isCreative()) {
+                        player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+                    }
+                    level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return ItemInteractionResult.SUCCESS;
+                }
             }
+            player.displayClientMessage(Component.literal(String.format("Water: (%d | %d)", rack.getWater(), WaterRackBlockEntity.MAX_WATER)), true);
         }
         return ItemInteractionResult.CONSUME;
     }

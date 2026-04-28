@@ -8,6 +8,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -92,6 +94,14 @@ public class FeedRackBlock extends BaseEntityBlock {
             RackPart part = state.getValue(PART);
             Direction facing = state.getValue(FACING);
 
+            // Drop items only from LEFT part (master)
+            if (part == RackPart.LEFT) {
+                FeedRackBlockEntity rack = level.getBlockEntity(pos) instanceof FeedRackBlockEntity ? (FeedRackBlockEntity) level.getBlockEntity(pos) : null;
+                if (rack != null) {
+                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(AnimalWellness.ANIMAL_FOOD.get(), rack.getFood()));
+                }
+            }
+
             Direction neighborDir = (part == RackPart.LEFT) ? facing.getClockWise() : facing.getCounterClockWise();
             BlockPos neighborPos = pos.relative(neighborDir);
 
@@ -113,9 +123,15 @@ public class FeedRackBlock extends BaseEntityBlock {
                     level.playSound(null, pos, SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
-            } else {
-                player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getFood(), FeedRackBlockEntity.MAX_FOOD)), true);
+            } else if (stack.isEmpty() && player.isShiftKeyDown()) {
+                if (rack.removeFood()) {
+                    if (!player.addItem(new ItemStack(AnimalWellness.ANIMAL_FOOD.get()))) {
+                        player.drop(new ItemStack(AnimalWellness.ANIMAL_FOOD.get()), false);
+                    }
+                    return ItemInteractionResult.SUCCESS;
+                }
             }
+            player.displayClientMessage(Component.literal(String.format("Food: (%d | %d)", rack.getFood(), FeedRackBlockEntity.MAX_FOOD)), true);
         }
         return ItemInteractionResult.CONSUME;
     }

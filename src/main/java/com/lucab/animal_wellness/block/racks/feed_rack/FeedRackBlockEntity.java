@@ -10,10 +10,14 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class FeedRackBlockEntity extends BlockEntity {
@@ -22,7 +26,22 @@ public class FeedRackBlockEntity extends BlockEntity {
     }
 
     public static final int MAX_FOOD = 10;
-    private int foodAmount = 0;
+    public final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+        }
+
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            return MAX_FOOD;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return stack.getItem() == AnimalWellness.ANIMAL_FOOD.get();
+        }
+    };
 
     public static FeedRackBlockEntity getFeedRack(Level level, BlockPos pos, BlockState state) {
         if (state.getValue(FeedRackBlock.PART) == RackPart.RIGHT) {
@@ -43,13 +62,13 @@ public class FeedRackBlockEntity extends BlockEntity {
     public int getFood() {
         FeedRackBlockEntity rack = getFeedRack(level, worldPosition, getBlockState());
         if (rack == null) return 0;
-        return rack.foodAmount;
+        return rack.inventory.getStackInSlot(0).getCount();
     }
 
     public boolean setFood(int amount) {
         FeedRackBlockEntity rack = getFeedRack(level, worldPosition, getBlockState());
         if (amount < 0 || amount > MAX_FOOD || rack == null) return false;
-        rack.foodAmount = amount;
+        rack.inventory.setStackInSlot(0, new ItemStack(AnimalWellness.ANIMAL_FOOD.get(), amount));
         rack.setChanged();
         this.setChanged();
         return true;
@@ -60,7 +79,7 @@ public class FeedRackBlockEntity extends BlockEntity {
     }
 
     public boolean removeFood() {
-        return  setFood(this.getFood() - 1);
+        return setFood(this.getFood() - 1);
     }
 
     public boolean hasFood() {
@@ -79,13 +98,13 @@ public class FeedRackBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("FoodCount", this.foodAmount);
+        tag.put("Inventory", inventory.serializeNBT(provider));
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        this.foodAmount = tag.getInt("FoodCount");
+        inventory.deserializeNBT(provider, tag.getCompound("Inventory"));
     }
 
     @Override

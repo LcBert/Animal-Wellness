@@ -14,6 +14,7 @@ import com.lucab.animal_wellness.network.AnimalDataSyncPacket;
 import com.lucab.animal_wellness.network.AnimalDataSyncRequestPacket;
 import com.lucab.animal_wellness.network.OpenAnimalScreenPacket;
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,6 +28,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -100,9 +103,30 @@ public class AnimalWellness {
         ATTACHMENT_TYPE.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
 
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::registerPayloads);
 
         addCreativeTab();
+    }
+
+    public void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                FEED_RACK_BLOCK_ENTITY.get(),
+                (be, side) -> {
+                    FeedRackBlockEntity rack = FeedRackBlockEntity.getFeedRack(be.getLevel(), be.getBlockPos(), be.getBlockState());
+                    return rack != null ? rack.inventory : be.inventory;
+                }
+        );
+
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                WATER_RACK_BLOCK_ENTITY.get(),
+                (be, side) -> {
+                    WaterRackBlockEntity rack = WaterRackBlockEntity.getWaterRack(be.getLevel(), be.getBlockPos(), be.getBlockState());
+                    return rack != null ? rack.tank : be.tank;
+                }
+        );
     }
 
     public void registerPayloads(RegisterPayloadHandlersEvent event) {

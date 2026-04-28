@@ -16,6 +16,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class WaterRackBlockEntity extends BlockEntity {
@@ -24,7 +29,17 @@ public class WaterRackBlockEntity extends BlockEntity {
     }
 
     public static final int MAX_WATER = 10;
-    private int waterAmount = 0;
+    public final FluidTank tank = new FluidTank(MAX_WATER * 1000) {
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
+
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid().isSame(Fluids.WATER);
+        }
+    };
 
     public static WaterRackBlockEntity getWaterRack(Level level, BlockPos pos, BlockState state) {
         if (state.getValue(WaterRackBlock.PART) == RackPart.RIGHT) {
@@ -45,13 +60,13 @@ public class WaterRackBlockEntity extends BlockEntity {
     public int getWater() {
         WaterRackBlockEntity rack = getWaterRack(level, worldPosition, getBlockState());
         if (rack == null) return 0;
-        return rack.waterAmount;
+        return rack.tank.getFluidAmount() / 1000;
     }
 
     public boolean setWater(int amount) {
         WaterRackBlockEntity rack = getWaterRack(level, worldPosition, getBlockState());
         if (amount < 0 || amount > MAX_WATER || rack == null) return false;
-        rack.waterAmount = amount;
+        rack.tank.setFluid(new FluidStack(Fluids.WATER, amount * 1000));
         rack.setChanged();
         this.setChanged();
         return true;
@@ -81,13 +96,15 @@ public class WaterRackBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("WaterCount", this.waterAmount);
+        tag.put("Tank", tank.writeToNBT(provider, new CompoundTag()));
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        this.waterAmount = tag.getInt("WaterCount");
+        if (tag.contains("Tank")) {
+            tank.readFromNBT(provider, tag.getCompound("Tank"));
+        }
     }
 
     @Override
