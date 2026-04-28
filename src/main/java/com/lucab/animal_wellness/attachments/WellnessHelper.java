@@ -88,8 +88,14 @@ public class WellnessHelper {
     public void setBirthAsAdult() {
         WellnessConfig.Config config = WellnessConfig.config;
         // Set birth time so the animal is already in the adult stage
-        long adultAgeTicks = (long) (config.age.maxAge * config.age.babyAgeThreshold * 1.5);
+        long adultAgeTicks = (long) (config.age.maxAge * config.age.babyAgeThreshold);
         wellness.birthTime = level.getGameTime() - adultAgeTicks;
+    }
+
+    public void setBirthAsOld() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        long oldAgeTicks = (long) (config.age.maxAge * config.age.adultAgeThreshold);
+        wellness.birthTime = level.getGameTime() - oldAgeTicks;
     }
 
     public long getBirthElapsed() {
