@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -118,6 +119,9 @@ public class WellnessEvent {
                 if (!helper.isBaby() && helper.getEggTime() == 0)
                     helper.setEggTime();
             }
+        }
+        if (entity instanceof Chicken chicken) {
+            chicken.eggTime = 6000;
         }
     }
 
