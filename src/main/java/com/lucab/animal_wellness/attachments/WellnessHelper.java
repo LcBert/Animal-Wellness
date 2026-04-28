@@ -85,6 +85,13 @@ public class WellnessHelper {
         wellness.birthTime = level.getGameTime();
     }
 
+    public void setBirthAsAdult() {
+        WellnessConfig.Config config = WellnessConfig.config;
+        // Set birth time so the animal is already in the adult stage
+        long adultAgeTicks = (long) (config.age.maxAge * config.age.babyAgeThreshold * 1.5);
+        wellness.birthTime = level.getGameTime() - adultAgeTicks;
+    }
+
     public long getBirthElapsed() {
         return level.getGameTime() - wellness.birthTime;
     }
@@ -128,6 +135,7 @@ public class WellnessHelper {
     }
 
     public boolean isFed() {
+        if (wellness.lastFoodTime == 0) return false;
         return getRemainingFood() > 0;
     }
 
@@ -150,6 +158,7 @@ public class WellnessHelper {
     }
 
     public boolean isHydrated() {
+        if (wellness.lastWaterTime == 0) return false;
         return getRemainingWater() > 0;
     }
 
@@ -190,6 +199,7 @@ public class WellnessHelper {
     }
 
     public boolean isBrushed() {
+        if (wellness.brushTime == 0) return false;
         return getRemainingBrushTime() > 0;
     }
 
@@ -234,6 +244,7 @@ public class WellnessHelper {
     }
 
     public long getRemainingGestation() {
+        if (wellness.gestationTime == 0) return 0;
         WellnessConfig.Config config = WellnessConfig.config;
         if (!isPregnant()) return 0;
         long elapsed = level.getGameTime() - wellness.gestationTime;
@@ -247,6 +258,7 @@ public class WellnessHelper {
     }
 
     public boolean isGestationCompleted() {
+        if (wellness.gestationTime == 0) return false;
         WellnessConfig.Config config = WellnessConfig.config;
         return level.getGameTime() - wellness.gestationTime >= config.breeding.pregnantTime;
     }
@@ -256,6 +268,7 @@ public class WellnessHelper {
     }
 
     public long getRemainingBreeding() {
+        if (wellness.breedingTime == 0) return 0;
         WellnessConfig.Config config = WellnessConfig.config;
         if (isFemale() && isPregnant()) return 0;
         long elapsed = level.getGameTime() - wellness.breedingTime;
@@ -265,6 +278,7 @@ public class WellnessHelper {
     }
 
     public boolean isBreeding() {
+        if (wellness.breedingTime == 0) return false;
         WellnessConfig.Config config = WellnessConfig.config;
         return level.getGameTime() - wellness.breedingTime < config.breeding.breedingTime;
     }
@@ -310,5 +324,14 @@ public class WellnessHelper {
     public float getTemperamentModifier() {
         WellnessConfig.Config config = WellnessConfig.config;
         return getGeneticTraits().temperament;
+    }
+
+    // Taming
+    public void setTamed(boolean tamed) {
+        wellness.tamed = tamed;
+    }
+
+    public boolean isTamed() {
+        return wellness.tamed;
     }
 }

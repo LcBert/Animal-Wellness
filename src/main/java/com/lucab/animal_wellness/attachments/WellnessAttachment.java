@@ -31,6 +31,8 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     public GeneticTraits partnerGenetics = new GeneticTraits();
     public GeneticTraits geneticTraits = new GeneticTraits();
 
+    public boolean tamed = false;
+
     @Override
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
@@ -48,6 +50,7 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         tag.putLong("pregnantTime", gestationTime);
         tag.putLong("breedingTime", breedingTime);
         tag.put("geneticTraits", geneticTraits.serializeNBT(provider));
+        tag.putBoolean("tamed", tamed);
 
         return tag;
     }
@@ -69,5 +72,6 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
         if (tag.contains("geneticTraits")) {
             geneticTraits.deserializeNBT(provider, tag.getCompound("geneticTraits"));
         }
+        tamed = tag.getBoolean("tamed");
     }
 }

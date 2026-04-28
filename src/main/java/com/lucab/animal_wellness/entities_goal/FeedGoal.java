@@ -133,6 +133,7 @@ public class FeedGoal extends Goal {
                     feedRack.removeFood();
                     this.helper.setFood();
                     if (!helper.hasManure()) helper.setManure();
+                    if (!helper.isTamed()) helper.setTamed(true);
                     this.helper.incrementAffinity();
                     this.stop(); // Task complete
                 } else if (level.getBlockEntity(this.targetRackPos) instanceof WaterRackBlockEntity waterRack) {

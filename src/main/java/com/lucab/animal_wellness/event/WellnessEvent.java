@@ -33,7 +33,7 @@ public class WellnessEvent {
             if (!helper.isTracked()) {
                 helper.setTracked();
                 helper.setRandomSex();
-                helper.setBirth();
+                helper.setBirthAsAdult();
             }
         }
     }
@@ -81,6 +81,7 @@ public class WellnessEvent {
                                 baby.moveTo(animal.getX(), animal.getY(), animal.getZ());
                                 serverLevel.addFreshEntity(baby);
                                 WellnessHelper babyHelper = WellnessHelper.getInstance(baby);
+                                babyHelper.setBirth();
                                 babyHelper.setAffinity(helper.getAffinity());
 
                                 // Genetic inheritance
