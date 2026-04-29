@@ -339,7 +339,11 @@ public class WellnessHelper {
         if (wellness.eggTime == 0) return 0;
         WellnessConfig.Config config = WellnessConfig.config;
         long elapsed = level.getGameTime() - wellness.eggTime;
-        long remaining = config.egg.eggTime - elapsed;
+        long maxEggTime = config.egg.eggTime;
+        if (config.genetics.enabled) {
+            maxEggTime += (long) (maxEggTime * getTrait(GeneticTraits.TraitType.PRODUCTIVITY));
+        }
+        long remaining = maxEggTime - elapsed;
         if (remaining <= 0) return 0;
         return remaining;
     }
