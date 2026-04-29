@@ -52,7 +52,7 @@ public class WellnessHelper {
         float affinityRate = config.affinity.affinityRate;
         // Apply temperament modifier if genetics is enabled
         if (config.genetics.enabled) {
-            affinityRate += affinityRate * getTemperamentModifier();
+            affinityRate += affinityRate * getTrait(GeneticTraits.TraitType.TEMPERAMENT);
         }
         setAffinity(wellness.affinity + affinityRate);
     }
@@ -63,7 +63,7 @@ public class WellnessHelper {
         affinityRate *= 1 - getAffinityScore();
         // Apply resistance modifier if genetics is enabled
         if (config.genetics.enabled) {
-            affinityRate *= 1 - getResistanceModifier();
+            affinityRate *= 1 - getTrait(GeneticTraits.TraitType.RESISTANCE);
         }
         setAffinity(wellness.affinity - affinityRate);
     }
@@ -133,7 +133,7 @@ public class WellnessHelper {
         long maxFeed = config.feed.maxFeed;
         // Apply efficiency modifier if genetics is enabled
         if (config.genetics.enabled) {
-            maxFeed += (long) (maxFeed * getEfficiencyModifier());
+            maxFeed += (long) (maxFeed * getTrait(GeneticTraits.TraitType.EFFICIENCY));
         }
         long remaining = maxFeed - elapsed;
         if (remaining <= 0) return 0;
@@ -156,7 +156,7 @@ public class WellnessHelper {
         long maxWater = config.feed.maxWater;
         // Apply efficiency modifier if genetics is enabled
         if (config.genetics.enabled) {
-            maxWater += (long) (maxWater * getEfficiencyModifier());
+            maxWater += (long) (maxWater * getTrait(GeneticTraits.TraitType.EFFICIENCY));
         }
         long remaining = maxWater - elapsed;
         if (remaining <= 0) return 0;
@@ -312,24 +312,8 @@ public class WellnessHelper {
         setGeneticTraits(inherited);
     }
 
-    public float getProductivityModifier() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return getGeneticTraits().productivity;
-    }
-
-    public float getResistanceModifier() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return getGeneticTraits().resistance;
-    }
-
-    public float getEfficiencyModifier() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return getGeneticTraits().efficiency;
-    }
-
-    public float getTemperamentModifier() {
-        WellnessConfig.Config config = WellnessConfig.config;
-        return getGeneticTraits().temperament;
+    public float getTrait(GeneticTraits.TraitType type) {
+        return getGeneticTraits().getTrait(type);
     }
 
     // Taming

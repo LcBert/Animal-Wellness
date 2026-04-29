@@ -1,5 +1,6 @@
 package com.lucab.animal_wellness.command;
 
+import com.lucab.animal_wellness.attachments.GeneticTraits;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -90,26 +91,25 @@ public class WellnessCommand {
         String message = "Set mob genetic %s to %.2f%%";
         switch (genetic) {
             case 0 -> {
-                helper.getGeneticTraits().productivity = value;
-                helper.getGeneticTraits().efficiency = value;
-                helper.getGeneticTraits().temperament = value;
-                helper.getGeneticTraits().resistance = value;
+                for (GeneticTraits.TraitType type : GeneticTraits.TraitType.values()) {
+                    helper.getGeneticTraits().setTrait(type, value);
+                }
                 source.sendSuccess(() -> Component.literal(String.format(message, "all", value * 100)), false);
             }
             case 1 -> {
-                helper.getGeneticTraits().productivity = value;
+                helper.getGeneticTraits().setTrait(GeneticTraits.TraitType.PRODUCTIVITY, value);
                 source.sendSuccess(() -> Component.literal(String.format(message, "productivity", value * 100)), false);
             }
             case 2 -> {
-                helper.getGeneticTraits().efficiency = value;
+                helper.getGeneticTraits().setTrait(GeneticTraits.TraitType.EFFICIENCY, value);
                 source.sendSuccess(() -> Component.literal(String.format(message, "efficiency", value * 100)), false);
             }
             case 3 -> {
-                helper.getGeneticTraits().temperament = value;
+                helper.getGeneticTraits().setTrait(GeneticTraits.TraitType.TEMPERAMENT, value);
                 source.sendSuccess(() -> Component.literal(String.format(message, "temperament", value * 100)), false);
             }
             case 4 -> {
-                helper.getGeneticTraits().resistance = value;
+                helper.getGeneticTraits().setTrait(GeneticTraits.TraitType.RESISTANCE, value);
                 source.sendSuccess(() -> Component.literal(String.format(message, "resistance", value * 100)), false);
             }
         }

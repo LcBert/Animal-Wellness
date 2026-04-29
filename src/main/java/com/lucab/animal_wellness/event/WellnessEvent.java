@@ -132,7 +132,7 @@ public class WellnessEvent {
         WellnessHelper helper = WellnessHelper.getInstance(entity);
         if (entity instanceof Animal && helper.isConsideredAnimal() && !helper.isBaby() && config.drop.affinityDrop) {
             if (helper.getAffinity() >= config.drop.affinityThreshold) {
-                float productivityMod = config.genetics.enabled ? helper.getProductivityModifier() : 1.0f;
+                float productivityMod = config.genetics.enabled ? helper.getTrait(GeneticTraits.TraitType.PRODUCTIVITY) : 1.0f;
                 event.getDrops().forEach(item -> {
                     item.getItem().setCount((int) (item.getItem().getCount() + config.drop.maxDrop * helper.getAffinity() * productivityMod));
                 });

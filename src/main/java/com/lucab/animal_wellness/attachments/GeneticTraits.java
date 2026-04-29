@@ -6,28 +6,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Random;
 
 public class GeneticTraits implements INBTSerializable<CompoundTag> {
-    // Tratti genetici (0.0 - 1.0 scale)
-    public float productivity;     // productivity: more products
-    public float efficiency;       // efficiency: food/water consumption
-    public float temperament;      // temperament: affinity encreasment
-    public float resistance;       // resistance: affinity reduction
+    public enum TraitType {PRODUCTIVITY, EFFICIENCY, TEMPERAMENT, RESISTANCE;}
+
+    private final Map<TraitType, Float> traits;
 
     public GeneticTraits() {
         Random random = new Random();
-        this.productivity = random.nextFloat(0.0f, 0.02f);
-        this.efficiency = random.nextFloat(0.0f, 0.02f);
-        this.temperament = random.nextFloat(0.0f, 0.02f);
-        this.resistance = random.nextFloat(0.0f, 0.02f);
+        this.traits = new EnumMap<>(TraitType.class);
+        for (TraitType type : TraitType.values()) {
+            this.traits.put(type, random.nextFloat(0.0f, 0.02f));
+        }
     }
 
-    public GeneticTraits(float productivity, float resistance, float efficiency, float temperament) {
-        this.productivity = Math.clamp(productivity, 0.0f, 1.0f);
-        this.efficiency = Math.clamp(efficiency, 0.0f, 1.0f);
-        this.temperament = Math.clamp(temperament, 0.0f, 1.0f);
-        this.resistance = Math.clamp(resistance, 0.0f, 1.0f);
+    public GeneticTraits(Map<TraitType, Float> traits) {
+        this.traits = new EnumMap<>(TraitType.class);
+        for (Map.Entry<TraitType, Float> entry : traits.entrySet()) {
+            this.traits.put(entry.getKey(), Math.clamp(entry.getValue(), 0.0f, 1.0f));
+        }
     }
 
     /**
@@ -37,43 +37,50 @@ public class GeneticTraits implements INBTSerializable<CompoundTag> {
         WellnessConfig.Config config = WellnessConfig.config;
         Random random = new Random();
 
-        // Media dei genitori
-        float productivity = (parent1.productivity + parent2.productivity) / 2.0f;
-        float efficiency = (parent1.efficiency + parent2.efficiency) / 2.0f;
-        float temperament = (parent1.temperament + parent2.temperament) / 2.0f;
-        float resistance = (parent1.resistance + parent2.resistance) / 2.0f;
+        Map<TraitType, Float> childTraits = new EnumMap<>(TraitType.class);
+        for (TraitType type : TraitType.values()) {
+            // Media dei genitori
+            float parentAvg = (parent1.getTrait(type) + parent2.getTrait(type)) / 2.0f;
+            // Applica mutazione
+            parentAvg += random.nextFloat(config.genetics.mutationAmount);
+            childTraits.put(type, parentAvg);
+        }
 
-        // Applica mutazioni
-        productivity += (random.nextFloat( config.genetics.mutationAmount));
-        efficiency += (random.nextFloat( config.genetics.mutationAmount));
-        temperament += (random.nextFloat( config.genetics.mutationAmount));
-        resistance += (random.nextFloat( config.genetics.mutationAmount));
-
-        return new GeneticTraits(productivity, resistance, efficiency, temperament);
+        return new GeneticTraits(childTraits);
     }
 
     /**
      * Calcola il punteggio complessivo dei tratti
      */
     public float getOverallScore() {
-        return (productivity + resistance + efficiency + temperament) / 5.0f;
+        float sum = 0.0f;
+        for (Float value : traits.values()) {
+            sum += value;
+        }
+        return sum / TraitType.values().length;
+    }
+
+    public float getTrait(TraitType type) {
+        return traits.getOrDefault(type, 0.0f);
+    }
+
+    public void setTrait(TraitType type, float value) {
+        traits.put(type, Math.clamp(value, 0.0f, 1.0f));
     }
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat("productivity", productivity);
-        tag.putFloat("efficiency", efficiency);
-        tag.putFloat("temperament", temperament);
-        tag.putFloat("resistance", resistance);
+        for (TraitType type : TraitType.values()) {
+            tag.putFloat(type.name().toLowerCase(), traits.get(type));
+        }
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag tag) {
-        productivity = tag.getFloat("productivity");
-        efficiency = tag.getFloat("efficiency");
-        temperament = tag.getFloat("temperament");
-        resistance = tag.getFloat("resistance");
+        for (TraitType type : TraitType.values()) {
+            traits.put(type, tag.getFloat(type.name().toLowerCase()));
+        }
     }
 }
