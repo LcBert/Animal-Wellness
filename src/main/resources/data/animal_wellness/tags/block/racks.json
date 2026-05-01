@@ -2,6 +2,17 @@
   "values": [
     "animal_wellness:oak_feed_rack",
     "animal_wellness:spruce_feed_rack",
-    "animal_wellness:stone_water_rack"
+    "animal_wellness:birch_feed_rack",
+    "animal_wellness:jungle_feed_rack",
+    "animal_wellness:acacia_feed_rack",
+    "animal_wellness:dark_oak_feed_rack",
+    "animal_wellness:crimson_feed_rack",
+    "animal_wellness:warped_feed_rack",
+    "animal_wellness:stone_water_rack",
+    "animal_wellness:cobblestone_water_rack",
+    "animal_wellness:stone_bricks_water_rack",
+    "animal_wellness:deepslate_water_rack",
+    "animal_wellness:tuff_water_rack",
+    "animal_wellness:blackstone_water_rack"
   ]
 }

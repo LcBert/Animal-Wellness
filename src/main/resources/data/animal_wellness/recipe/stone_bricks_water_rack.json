@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone_brick_slab"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "animal_wellness:stone_bricks_water_rack"
+  }
+}

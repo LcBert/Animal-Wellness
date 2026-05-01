@@ -1,7 +1,3 @@
 {
-  "parent": "animal_wellness:block/feed_rack",
-  "textures": {
-    "particle": "minecraft:block/stone",
-    "texture": "minecraft:block/stone"
-  }
+  "parent": "animal_wellness:block/stone_water_rack"
 }

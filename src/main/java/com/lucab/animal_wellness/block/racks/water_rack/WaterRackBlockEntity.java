@@ -2,8 +2,6 @@ package com.lucab.animal_wellness.block.racks.water_rack;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.block.racks.RackPart;
-import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlock;
-import com.lucab.animal_wellness.block.racks.feed_rack.FeedRackBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -16,11 +14,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class WaterRackBlockEntity extends BlockEntity {

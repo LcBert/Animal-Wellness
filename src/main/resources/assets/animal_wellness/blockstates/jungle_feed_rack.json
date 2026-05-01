@@ -1,0 +1,78 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "animal_wellness:block/jungle_feed_rack"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/jungle_feed_rack",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/jungle_feed_rack",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/jungle_feed_rack",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food"
+      },
+      "when": {
+        "facing": "north",
+        "food": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "food": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "food": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "animal_wellness:block/feed_rack_food",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "food": "true"
+      }
+    }
+  ]
+}

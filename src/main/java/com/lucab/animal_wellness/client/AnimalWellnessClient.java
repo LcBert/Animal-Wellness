@@ -1,7 +1,6 @@
 package com.lucab.animal_wellness.client;
 
 import com.lucab.animal_wellness.AnimalWellness;
-import com.lucab.animal_wellness.block.nest.NestBlockEntity;
 import com.lucab.animal_wellness.block.nest.NestBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.neoforged.api.distmarker.Dist;

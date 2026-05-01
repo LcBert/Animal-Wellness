@@ -1,7 +1,6 @@
 package com.lucab.animal_wellness.entities_goal;
 
 import com.lucab.animal_wellness.attachments.WellnessHelper;
-import com.lucab.animal_wellness.config.WellnessConfig;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;

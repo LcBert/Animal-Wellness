@@ -85,20 +85,53 @@ public class AnimalWellness {
     public static final DeferredItem<BlockItem> OAK_FEED_RACK_ITEM = ITEMS.register("oak_feed_rack", () -> new BlockItem(OAK_FEED_RACK.get(), new Item.Properties()));
     public static final DeferredBlock<Block> SPRUCE_FEED_RACK = BLOCKS.register("spruce_feed_rack", () -> new FeedRackBlock());
     public static final DeferredItem<BlockItem> SPRUCE_FEED_RACK_ITEM = ITEMS.register("spruce_feed_rack", () -> new BlockItem(SPRUCE_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> BIRCH_FEED_RACK = BLOCKS.register("birch_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> BIRCH_FEED_RACK_ITEM = ITEMS.register("birch_feed_rack", () -> new BlockItem(BIRCH_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> JUNGLE_FEED_RACK = BLOCKS.register("jungle_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> JUNGLE_FEED_RACK_ITEM = ITEMS.register("jungle_feed_rack", () -> new BlockItem(JUNGLE_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> ACACIA_FEED_RACK = BLOCKS.register("acacia_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> ACACIA_FEED_RACK_ITEM = ITEMS.register("acacia_feed_rack", () -> new BlockItem(ACACIA_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> DARK_OAK_FEED_RACK = BLOCKS.register("dark_oak_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> DARK_OAK_FEED_RACK_ITEM = ITEMS.register("dark_oak_feed_rack", () -> new BlockItem(DARK_OAK_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> CRIMSON_FEED_RACK = BLOCKS.register("crimson_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> CRIMSON_FEED_RACK_ITEM = ITEMS.register("crimson_feed_rack", () -> new BlockItem(CRIMSON_FEED_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> WARPED_FEED_RACK = BLOCKS.register("warped_feed_rack", () -> new FeedRackBlock());
+    public static final DeferredItem<BlockItem> WARPED_FEED_RACK_ITEM = ITEMS.register("warped_feed_rack", () -> new BlockItem(WARPED_FEED_RACK.get(), new Item.Properties()));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedRackBlockEntity>> FEED_RACK_BLOCK_ENTITY = BLOCK_ENTITIES
             .register("oak_feed_rack", () -> BlockEntityType.Builder.of(FeedRackBlockEntity::new,
                     OAK_FEED_RACK.get(),
-                    SPRUCE_FEED_RACK.get()
+                    SPRUCE_FEED_RACK.get(),
+                    BIRCH_FEED_RACK.get(),
+                    JUNGLE_FEED_RACK.get(),
+                    ACACIA_FEED_RACK.get(),
+                    DARK_OAK_FEED_RACK.get(),
+                    CRIMSON_FEED_RACK.get(),
+                    WARPED_FEED_RACK.get()
             ).build(null));
 
     // Water rack
     public static final DeferredBlock<Block> STONE_WATER_RACK = BLOCKS.register("stone_water_rack", () -> new WaterRackBlock());
     public static final DeferredItem<BlockItem> STONE_WATER_RACK_ITEM = ITEMS.register("stone_water_rack", () -> new BlockItem(STONE_WATER_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> COBBLESTONE_WATER_RACK = BLOCKS.register("cobblestone_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> COBBLESTONE_WATER_RACK_ITEM = ITEMS.register("cobblestone_water_rack", () -> new BlockItem(COBBLESTONE_WATER_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> STONE_BRICKS_WATER_RACK = BLOCKS.register("stone_bricks_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> STONE_BRICKS_WATER_RACK_ITEM = ITEMS.register("stone_bricks_water_rack", () -> new BlockItem(STONE_BRICKS_WATER_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> DEEPSLATE_WATER_RACK = BLOCKS.register("deepslate_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> DEEPSLATE_WATER_RACK_ITEM = ITEMS.register("deepslate_water_rack", () -> new BlockItem(DEEPSLATE_WATER_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> TUFF_WATER_RACK = BLOCKS.register("tuff_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> TUFF_WATER_RACK_ITEM = ITEMS.register("tuff_water_rack", () -> new BlockItem(TUFF_WATER_RACK.get(), new Item.Properties()));
+    public static final DeferredBlock<Block> BLACKSTONE_WATER_RACK = BLOCKS.register("blackstone_water_rack", () -> new WaterRackBlock());
+    public static final DeferredItem<BlockItem> BLACKSTONE_WATER_RACK_ITEM = ITEMS.register("blackstone_water_rack", () -> new BlockItem(BLACKSTONE_WATER_RACK.get(), new Item.Properties()));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterRackBlockEntity>> WATER_RACK_BLOCK_ENTITY = BLOCK_ENTITIES
             .register("water_rack", () -> BlockEntityType.Builder.of(WaterRackBlockEntity::new,
-                    STONE_WATER_RACK.get()
+                    STONE_WATER_RACK.get(),
+                    COBBLESTONE_WATER_RACK.get(),
+                    STONE_BRICKS_WATER_RACK.get(),
+                    DEEPSLATE_WATER_RACK.get(),
+                    TUFF_WATER_RACK.get(),
+                    BLACKSTONE_WATER_RACK.get()
             ).build(null));
 
     public AnimalWellness(IEventBus modEventBus, ModContainer modContainer) {
@@ -156,7 +189,18 @@ public class AnimalWellness {
                     output.accept(NEST_ITEM);
                     output.accept(OAK_FEED_RACK_ITEM);
                     output.accept(SPRUCE_FEED_RACK_ITEM);
+                    output.accept(BIRCH_FEED_RACK_ITEM);
+                    output.accept(JUNGLE_FEED_RACK_ITEM);
+                    output.accept(ACACIA_FEED_RACK_ITEM);
+                    output.accept(DARK_OAK_FEED_RACK_ITEM);
+                    output.accept(CRIMSON_FEED_RACK_ITEM);
+                    output.accept(WARPED_FEED_RACK_ITEM);
                     output.accept(STONE_WATER_RACK_ITEM);
+                    output.accept(COBBLESTONE_WATER_RACK_ITEM);
+                    output.accept(STONE_BRICKS_WATER_RACK_ITEM);
+                    output.accept(DEEPSLATE_WATER_RACK_ITEM);
+                    output.accept(TUFF_WATER_RACK_ITEM);
+                    output.accept(BLACKSTONE_WATER_RACK_ITEM);
                 }).build());
     }
 

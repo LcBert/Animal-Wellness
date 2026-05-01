@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:birch_slab"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "animal_wellness:birch_feed_rack"
+  }
+}

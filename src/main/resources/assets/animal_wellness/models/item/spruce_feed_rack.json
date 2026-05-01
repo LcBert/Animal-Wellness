@@ -1,7 +1,3 @@
 {
-  "parent": "animal_wellness:block/feed_rack",
-  "textures": {
-    "particle": "minecraft:block/spruce_planks",
-    "texture": "minecraft:block/spruce_planks"
-  }
+  "parent": "animal_wellness:block/spruce_feed_rack"
 }
