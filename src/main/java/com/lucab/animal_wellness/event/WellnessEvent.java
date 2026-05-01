@@ -15,13 +15,17 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -161,16 +165,36 @@ public class WellnessEvent {
     public static void onCowMilkCollected(PlayerInteractEvent.EntityInteract event) {
         Entity entity = event.getTarget();
         WellnessHelper helper = WellnessHelper.getInstance(entity);
-        if (entity instanceof Cow cow && helper.isConsideredAnimal()) {
-            ItemStack stack = event.getItemStack();
-            if (stack.getItem() == Items.BUCKET) {
+        if (entity instanceof Cow && helper.isConsideredAnimal()) {
+            if (event.getItemStack().getItem() instanceof BucketItem) {
                 if (!helper.isMilkReady()) {
                     event.setCanceled(true);
                     event.setCancellationResult(InteractionResult.PASS);
-                }else{
+                } else {
                     helper.setMilkTime();
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onSheepEatGrass(EntityTickEvent.Post event) {
+        Entity entity = event.getEntity();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Sheep sheep && helper.isConsideredAnimal()) {
+            if (!helper.isWoolReady()) {
+                sheep.setSheared(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onSheepSheared(PlayerInteractEvent.EntityInteract event) {
+        Entity entity = event.getTarget();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Sheep && helper.isConsideredAnimal()) {
+            if (event.getItemStack().getItem() instanceof ShearsItem && helper.isWoolReady())
+                helper.setWoolTime();
         }
     }
 }

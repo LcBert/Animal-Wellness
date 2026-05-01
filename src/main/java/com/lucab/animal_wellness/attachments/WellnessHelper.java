@@ -332,7 +332,6 @@ public class WellnessHelper {
 
     public long getEggTime() {
         return wellness.eggTime;
-
     }
 
     public long getRemainingEggTime() {
@@ -341,7 +340,7 @@ public class WellnessHelper {
         long elapsed = level.getGameTime() - wellness.eggTime;
         long maxEggTime = config.egg.eggTime;
         if (config.genetics.enabled) {
-            maxEggTime += (long) (maxEggTime * getTrait(GeneticTraits.TraitType.PRODUCTIVITY));
+            maxEggTime -= (long) (maxEggTime * (getTrait(GeneticTraits.TraitType.PRODUCTIVITY) - 0.2f));
         }
         long remaining = maxEggTime - elapsed;
         if (remaining <= 0) return 0;
@@ -367,8 +366,9 @@ public class WellnessHelper {
         long elapsed = level.getGameTime() - wellness.milkTime;
         long maxMilkTime = config.milk.milkTime;
         if (config.genetics.enabled) {
-            maxMilkTime += (long) (maxMilkTime * getTrait(GeneticTraits.TraitType.PRODUCTIVITY));
+            maxMilkTime -= (long) (maxMilkTime * (getTrait(GeneticTraits.TraitType.PRODUCTIVITY) - 0.2f));
         }
+        AnimalWellness.LOGGER.info("Milk time: " + maxMilkTime);
         long remaining = maxMilkTime - elapsed;
         if (remaining <= 0) return 0;
         return remaining;
@@ -376,5 +376,31 @@ public class WellnessHelper {
 
     public boolean isMilkReady() {
         return (!isBaby() && getRemainingMilkTime() == 0);
+    }
+
+    // Wool (Only for sheep)
+    public void setWoolTime() {
+        wellness.woolTime = level.getGameTime();
+    }
+
+    public long getWoolTime() {
+        return wellness.woolTime;
+    }
+
+    public long getRemainingWoolTime() {
+        if (wellness.woolTime == 0) return 0;
+        WellnessConfig.Config config = WellnessConfig.config;
+        long elapsed = level.getGameTime() - wellness.woolTime;
+        long maxWoolTime = config.wool.woolTime;
+        if (config.genetics.enabled) {
+            maxWoolTime -= (long) (maxWoolTime * (getTrait(GeneticTraits.TraitType.PRODUCTIVITY) - 0.2f));
+        }
+        long remaining = maxWoolTime - elapsed;
+        if (remaining <= 0) return 0;
+        return remaining;
+    }
+
+    public boolean isWoolReady() {
+        return (!isBaby() && getRemainingWoolTime() == 0);
     }
 }
