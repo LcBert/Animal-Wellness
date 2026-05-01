@@ -219,7 +219,7 @@ All Rights Reserved
 
 ## 📝 Changelog
 
-### Version 0.1
+### Version 0.0.1
 
 - Initial release
 - Animal wellness system
