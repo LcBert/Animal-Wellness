@@ -2,6 +2,7 @@ package com.lucab.animal_wellness.network;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.attachments.WellnessAttachment;
+import com.lucab.animal_wellness.attachments.WellnessHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -34,8 +35,8 @@ public record AnimalDataSyncRequestPacket(int entityId) implements CustomPacketP
             if (context.player() instanceof ServerPlayer serverPlayer) {
                 Entity entity = serverPlayer.serverLevel().getEntity(packet.entityId());
                 if (entity != null) {
-                    WellnessAttachment attachment = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
-                    PacketDistributor.sendToPlayer(serverPlayer, new AnimalDataSyncPacket(packet.entityId(), attachment.serializeNBT(entity.level().registryAccess())));
+                    WellnessHelper helper = WellnessHelper.getInstance(entity);
+                    helper.syncToPlayer(serverPlayer);
                 }
             }
         });

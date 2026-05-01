@@ -2,10 +2,13 @@ package com.lucab.animal_wellness.attachments;
 
 import com.lucab.animal_wellness.AnimalWellness;
 import com.lucab.animal_wellness.config.WellnessConfig;
+import com.lucab.animal_wellness.network.AnimalDataSyncPacket;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Random;
 import java.util.UUID;
@@ -24,6 +27,17 @@ public class WellnessHelper {
     public static WellnessHelper getInstance(Entity entity) {
         WellnessAttachment wellness = entity.getData(AnimalWellness.ANIMAL_WELLNESS_ATTACHMENT.get());
         return new WellnessHelper(entity.level(), entity, wellness);
+    }
+
+    public void syncToPlayer(ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, new AnimalDataSyncPacket(entity.getId(), wellness.serializeNBT(entity.level().registryAccess())));
+    }
+
+    public void syncToAll() {
+        Level level = entity.level();
+        level.getServer().getPlayerList().getPlayers().forEach(player -> {
+            PacketDistributor.sendToPlayer(player, new AnimalDataSyncPacket(entity.getId(), wellness.serializeNBT(entity.level().registryAccess())));
+        });
     }
 
     public boolean isConsideredAnimal() {

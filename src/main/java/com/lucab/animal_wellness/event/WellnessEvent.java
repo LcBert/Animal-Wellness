@@ -5,6 +5,7 @@ import com.lucab.animal_wellness.attachments.GeneticTraits;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.lucab.animal_wellness.block.manure.ManureBlock;
 import com.lucab.animal_wellness.config.WellnessConfig;
+import com.lucab.animal_wellness.network.AnimalDataSyncRequestPacket;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -18,17 +19,17 @@ import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = AnimalWellness.MODID)
 public class WellnessEvent {
@@ -196,5 +197,21 @@ public class WellnessEvent {
             if (event.getItemStack().getItem() instanceof ShearsItem && helper.isWoolReady())
                 helper.setWoolTime();
         }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLookAtAnimal(PlayerTickEvent.Post event) {
+        if (!event.getEntity().level().isClientSide) return;
+
+        if (event.getEntity().tickCount % 100 != 0) return;
+
+        // Get all animals in range
+        AABB searchBox = event.getEntity().getBoundingBox().inflate(5.0);
+        event.getEntity().level().getEntitiesOfClass(Animal.class, searchBox).forEach(animal -> {
+            WellnessHelper helper = WellnessHelper.getInstance(animal);
+            if (helper.isConsideredAnimal()) {
+                PacketDistributor.sendToServer(new AnimalDataSyncRequestPacket(animal.getId()));
+            }
+        });
     }
 }
