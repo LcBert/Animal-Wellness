@@ -351,4 +351,30 @@ public class WellnessHelper {
     public boolean isEggReady() {
         return (!isBaby() && getRemainingEggTime() == 0);
     }
+
+    // Milk (Only for cow)
+    public void setMilkTime() {
+        wellness.milkTime = level.getGameTime();
+    }
+
+    public long getMilkTime() {
+        return wellness.milkTime;
+    }
+
+    public long getRemainingMilkTime() {
+        if (wellness.milkTime == 0) return 0;
+        WellnessConfig.Config config = WellnessConfig.config;
+        long elapsed = level.getGameTime() - wellness.milkTime;
+        long maxMilkTime = config.milk.milkTime;
+        if (config.genetics.enabled) {
+            maxMilkTime += (long) (maxMilkTime * getTrait(GeneticTraits.TraitType.PRODUCTIVITY));
+        }
+        long remaining = maxMilkTime - elapsed;
+        if (remaining <= 0) return 0;
+        return remaining;
+    }
+
+    public boolean isMilkReady() {
+        return (!isBaby() && getRemainingMilkTime() == 0);
+    }
 }

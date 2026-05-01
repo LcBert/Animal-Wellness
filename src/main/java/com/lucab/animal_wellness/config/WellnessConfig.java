@@ -72,6 +72,10 @@ public class WellnessConfig {
             public int layTime = 200;
         }
 
+        public static class Milk {
+            public int milkTime = 18000;
+        }
+
         public EntityList entityList = new EntityList();
         public Affinity affinity = new Affinity();
         public Age age = new Age();
@@ -82,6 +86,7 @@ public class WellnessConfig {
         public Drop drop = new Drop();
         public Genetics genetics = new Genetics();
         public Egg egg = new Egg();
+        public Milk milk = new Milk();
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

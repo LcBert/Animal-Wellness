@@ -36,6 +36,9 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
     // Only for chicken
     public long eggTime = 0;
 
+    // Only for cow
+    public long milkTime = 0;
+
     @Override
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
@@ -57,6 +60,9 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
 
         // Only for chicken
         tag.putLong("eggTime", eggTime);
+
+        // Only for cow
+        tag.putLong("milkTime", milkTime);
 
         return tag;
     }
@@ -82,5 +88,8 @@ public class WellnessAttachment implements INBTSerializable<CompoundTag> {
 
         // Only for chicken
         eggTime = tag.getLong("eggTime");
+
+        // Only for cow
+        milkTime = tag.getLong("milkTime");
     }
 }

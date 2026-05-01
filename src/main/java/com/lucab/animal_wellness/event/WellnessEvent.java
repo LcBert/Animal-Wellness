@@ -14,7 +14,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -151,6 +153,23 @@ public class WellnessEvent {
             if (animal.isFood(stack)) {
                 event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.PASS);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCowMilkCollected(PlayerInteractEvent.EntityInteract event) {
+        Entity entity = event.getTarget();
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (entity instanceof Cow cow && helper.isConsideredAnimal()) {
+            ItemStack stack = event.getItemStack();
+            if (stack.getItem() == Items.BUCKET) {
+                if (!helper.isMilkReady()) {
+                    event.setCanceled(true);
+                    event.setCancellationResult(InteractionResult.PASS);
+                }else{
+                    helper.setMilkTime();
+                }
             }
         }
     }
