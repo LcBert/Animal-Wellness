@@ -224,6 +224,10 @@ public class WellnessHelper {
     }
 
     // Sex
+    public void setSex(AnimalSex sex) {
+        wellness.sex = sex;
+    }
+
     public void setRandomSex() {
         wellness.sex = new Random().nextBoolean() ? AnimalSex.MALE : AnimalSex.FEMALE;
     }

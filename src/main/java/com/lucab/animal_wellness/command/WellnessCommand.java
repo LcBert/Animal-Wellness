@@ -1,5 +1,6 @@
 package com.lucab.animal_wellness.command;
 
+import com.lucab.animal_wellness.attachments.AnimalSex;
 import com.lucab.animal_wellness.attachments.GeneticTraits;
 import com.lucab.animal_wellness.attachments.WellnessHelper;
 import com.mojang.brigadier.CommandDispatcher;
@@ -45,6 +46,14 @@ public class WellnessCommand {
                                         .then(Commands.argument("value", FloatArgumentType.floatArg(0f, 1f))
                                                 .executes(ctx -> setGenetic(ctx, 4)))
                                 )
+                        )
+                )
+                .then(Commands.literal("setSex")
+                        .then(Commands.argument("entity", EntityArgument.entity())
+                                .then(Commands.literal("male")
+                                        .executes(ctx -> setSex(ctx, AnimalSex.MALE)))
+                                .then(Commands.literal("female")
+                                        .executes(ctx -> setSex(ctx, AnimalSex.FEMALE)))
                         )
                 )
         );
@@ -113,6 +122,21 @@ public class WellnessCommand {
                 source.sendSuccess(() -> Component.literal(String.format(message, "resistance", value * 100)), false);
             }
         }
+
+        return 1;
+    }
+
+    private static int setSex(CommandContext<CommandSourceStack> context, AnimalSex sex) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        Entity entity = EntityArgument.getEntity(context, "entity");
+        WellnessHelper helper = WellnessHelper.getInstance(entity);
+        if (!helper.isConsideredAnimal()) {
+            source.sendFailure(Component.literal("Entity is not an animal"));
+            return 0;
+        }
+
+        helper.setSex(sex);
+        source.sendSuccess(() -> Component.literal("Set mob sex to " + sex.name().toLowerCase()), false);
 
         return 1;
     }
