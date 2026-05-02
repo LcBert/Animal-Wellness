@@ -203,10 +203,6 @@ The mod generates an `animal_wellness-server.json` file in the config folder:
 /wellness setSex <entity> <male|female>
 ```
 
-## 📸 Gallery
-
-*[Add mod screenshots here]*
-
 ## 🤝 Support
 
 For bugs, suggestions, or questions:
