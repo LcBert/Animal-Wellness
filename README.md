@@ -1,7 +1,6 @@
 # Animal Wellness
 
 ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen)
-![NeoForge](https://img.shields.io/badge/NeoForge-21.1.227-yellow)
 ![License](https://img.shields.io/badge/License-All%20Rights%20Reserved-red)
 ---
 
