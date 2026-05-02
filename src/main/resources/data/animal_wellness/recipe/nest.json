@@ -7,11 +7,11 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:cobbled_deepslate_slab"
+      "item": "minecraft:wheat"
     }
   },
   "result": {
     "count": 1,
-    "id": "animal_wellness:deepslate_water_rack"
+    "id": "animal_wellness:nest"
   }
 }
