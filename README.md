@@ -37,7 +37,7 @@ Each animal has a tracking system that includes:
 #### 🪥 Animal Brush
 
 - Brush your animals
-- Shows particles when near unbrushed animals
+- Shows particles on near unbrushed animals
 
 #### 🔍 Animal Inspector
 
